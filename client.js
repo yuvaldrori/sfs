@@ -6,14 +6,16 @@ var sfu = function() {
     var canvasCopy = document.createElement('canvas');
     var contextCopy = canvas.getContext('2d');
     image.onload = function() {
-      console.log('image onload');
+      console.log('image onload ' + theFile.name);
       canvasCopy.width = image.width;
       canvasCopy.height = image.height;
       contextCopy.drawImage(image, 0, 0);
+      document.getElementById('after').insertBefore(canvasCopy);
       canvas.width = image.width * 0.25;
       canvas.height = image.height * 0.25;
       context.drawImage(canvasCopy, 0, 0, canvasCopy.width, canvasCopy.height,
           0, 0, canvas.width, canvas.height);
+      document.getElementById('after').insertBefore(canvas);
     };
     image.src = data;
   };
