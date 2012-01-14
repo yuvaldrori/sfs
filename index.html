@@ -1,0 +1,12 @@
+<html>
+  <head></head>
+  <body>
+    <input type='file' id='files' name='files[]' multiple />
+    <div id='after'></div>
+
+    <script src='client.js'></script>
+    <script>
+      document.getElementById('files').addEventListener('change', sfu.handleFileSelect, false);
+    </script>
+  </body>
+</html>

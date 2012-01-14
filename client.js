@@ -1,22 +1,21 @@
 var sfu = function() {
-  var smallen = function(data, theFile) {
-    var image = new Image();
+  var resizeImage = function(image, theFile) {
+    console.log('resize image ' + theFile.name);
+    var ratio = 0.33;
     var canvas = document.createElement('canvas');
+    canvas.id = theFile.name;
+    document.getElementById('after').insertBefore(canvas);
     var context = canvas.getContext('2d');
-    var canvasCopy = document.createElement('canvas');
-    var contextCopy = canvas.getContext('2d');
+    canvas.width = image.width * ratio;
+    canvas.height = image.height * ratio;
+    context.drawImage(image, 0, 0, image.width * ratio, image.height * ratio);
+  };
+  var newImage = function(data, theFile) {
+    console.log('new image ' + theFile.name);
+    var image = new Image();
     image.onload = function() {
-      console.log('image onload ' + theFile.name);
-      canvasCopy.width = image.width;
-      canvasCopy.height = image.height;
-      contextCopy.drawImage(image, 0, 0);
-      document.getElementById('after').insertBefore(canvasCopy);
-      canvas.width = image.width * 0.25;
-      canvas.height = image.height * 0.25;
-      context.drawImage(canvasCopy, 0, 0, canvasCopy.width, canvasCopy.height,
-          0, 0, canvas.width, canvas.height);
-      document.getElementById('after').insertBefore(canvas);
-    };
+      resizeImage(image, theFile);
+    }
     image.src = data;
   };
   return {
@@ -32,7 +31,7 @@ var sfu = function() {
                           reader.onload = (function(theFile) {
                             return function(e) {
                               console.log('reader onload ' + theFile.name);
-                              smallen(e.target.result, theFile);
+                              newImage(e.target.result, theFile);
                             };
                           })(f);
                           reader.readAsDataURL(f);
