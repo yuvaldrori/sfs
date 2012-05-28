@@ -11,12 +11,6 @@ var awsAccessKeyID=process.env.AWSAccessKeyID;
 var awsAccountID=process.env.AWSAccountID;
 var awsSecretAccessKey=process.env.AWSSecretAccessKey;
 
-var s3 = new S3({
-  'accessKeyId' : awsAccessKeyID,
-    'secretAccessKey' : awsSecretAccessKey,
-    'region' : amazon.US_EAST_1
-});
-
 var threeDayRule = {
   'Prefix' : '',
   'Status' : 'Enabled',
@@ -30,6 +24,12 @@ route.get('/', function(req, res) {
 });
 
 route.get('/event', function(req, res) {
+  var s3 = new S3({
+    'accessKeyId' : awsAccessKeyID,
+    'secretAccessKey' : awsSecretAccessKey,
+    'region' : amazon.US_EAST_1
+  });
+
   s3.CreateBucket({BucketName:'sfs_' + uuid.v4(),
     Acl:'public-read-write'}, function(err, data){
       if (err) {
