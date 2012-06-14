@@ -35,7 +35,7 @@ route.get('/event', function(req, res) {
       if (err) {
         res.writeHead(400);
         res.end(err);
-        console.log(err);
+        util.log(err);
         return;
       }
       var bucketName = data.Headers.location.slice(1);
@@ -44,12 +44,12 @@ route.get('/event', function(req, res) {
           if (err) {
             res.writeHead(400);
             res.end(err);
-            console.log(err);
+            util.log(err);
             return;
           }
           res.writeHead(200);
           res.end(bucketName);
-          console.log(data);
+          util.log(data);
         });
     });
 });
