@@ -49,7 +49,7 @@ route.get('/event', function(req, res) {
           }
           res.writeHead(200);
           res.end(bucketName);
-          util.log(data);
+          util.log(util.inspect(data, true, null));
         });
     });
 });
