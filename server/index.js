@@ -24,7 +24,7 @@ route.get('/', function(req, res) {
   res.end('hello index page');
 });
 
-var file = new(static.Server)();
+var file = new(static.Server)('./static');
 route.get('/app/*', function(req, res) {
   file.serve(req, res);
 });
