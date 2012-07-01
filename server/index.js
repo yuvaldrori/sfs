@@ -6,6 +6,7 @@ var uuid = require('node-uuid');
 var awssum = require('awssum');
 var amazon = awssum.load('amazon/amazon');
 var S3 = awssum.load('amazon/s3').S3;
+var static = require('node-static');
 
 var awsAccessKeyID=process.env.AWSAccessKeyID;
 var awsAccountID=process.env.AWSAccountID;
@@ -21,6 +22,11 @@ var threeDayRule = {
 route.get('/', function(req, res) {
   res.writeHead(200);
   res.end('hello index page');
+});
+
+var file = new(static.Server)();
+route.get('/app/*', function(req, res) {
+  file.serve(req, res);
 });
 
 route.get('/event', function(req, res) {
