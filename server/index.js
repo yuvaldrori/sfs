@@ -12,6 +12,8 @@ var awsAccessKeyID=process.env.AWSAccessKeyID;
 var awsAccountID=process.env.AWSAccountID;
 var awsSecretAccessKey=process.env.AWSSecretAccessKey;
 
+process.chdir(__dirname);
+
 var threeDayRule = {
   'Prefix' : '',
   'Status' : 'Enabled',
