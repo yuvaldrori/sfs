@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="qrcode.js"></script>
+      <script type="text/javascript">
+        var draw_qrcode = function(text, typeNumber, errorCorrectLevel) {
+          document.write(create_qrcode(text, typeNumber, errorCorrectLevel) );
+        };
+
+var create_qrcode = function(text, typeNumber, errorCorrectLevel, table) {
+
+  var qr = qrcode(typeNumber || 4, errorCorrectLevel || 'M');
+  qr.addData(text);
+  qr.make();
+
+  //	return qr.createTableTag();
+  return qr.createImgTag();
+};
+
+        $(document).ready(function() {
+            $.get('http://localhost:8080', function(data) {
+              $('#test').html(create_qrcode(data));
+              });
+            });
+</script>
+  </head>
+  <body>
+    <div id="test">
+    </div>
+  </body>
+</html>
