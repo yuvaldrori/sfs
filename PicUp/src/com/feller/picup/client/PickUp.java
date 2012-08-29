@@ -25,7 +25,6 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -35,6 +34,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -43,6 +43,7 @@ public class PickUp implements EntryPoint {
 	private String getBacketURL = "http://localhost:80/event";
 	private Label errorLabel = new Label("");
 	private FlowPanel qrPannel = new FlowPanel();
+	private AWSUploadPanel Uploadpanel = new AWSUploadPanel("a","b");
 	
 
 	public void onModuleLoad() {
@@ -65,6 +66,11 @@ public class PickUp implements EntryPoint {
 		horizontalPanel.add(getQRButton);
 
 		Button btnSendToBucket = new Button("send to Bucket");
+		btnSendToBucket.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				generateUploadFrame();
+			}
+		});
 		horizontalPanel.add(btnSendToBucket);
 
 
@@ -73,9 +79,18 @@ public class PickUp implements EntryPoint {
 		
 		mainPanel.add(qrPannel);
 		qrPannel.setWidth("197px");
+		
+		
+		mainPanel.add(Uploadpanel);
+		Uploadpanel.setWidth("190px");
 
 		Image picupImage = new Image("images/picUp.png");
 		mainPanel.add(picupImage);
+	}
+
+	protected void generateUploadFrame() {
+		Uploadpanel.addFrame();
+		
 	}
 
 	protected void getBucketURL() {
@@ -126,5 +141,12 @@ public class PickUp implements EntryPoint {
 
 		Date d = new Date();
 		errorLabel.setText(string + " - " + d.toLocaleString() + getBacketURL);
+		
+		//decode the barcode
+		QRCodeReader reader = new QRCodeReader();
+//		if (reader == null)
+//		{
+//			errorLabel.setText("a");
+//		}
 	}
 }
