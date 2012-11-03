@@ -1,0 +1,10 @@
+{"expiration": "2013-01-01T00:00:00Z",
+  "conditions": [ 
+    {"bucket": "s3-bucket"}, 
+    ["starts-with", "$key", "uploads/"],
+    {"acl": "private"},
+    {"success_action_redirect": "http://localhost/"},
+    ["starts-with", "$Content-Type", ""],
+    ["content-length-range", 0, 1048576]
+  ]
+}

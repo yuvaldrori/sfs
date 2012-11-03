@@ -311,12 +311,12 @@ function com_feller_picup_PickUp(){
   $stats && $stats({moduleName:'com.feller.picup.PickUp', sessionId:$sessionId_0, subSystem:'startup', evtGroup:'bootstrap', millis:(new Date).getTime(), type:'selectingPermutation'});
   if (!isHostedMode()) {
     try {
-      unflattenKeylistIntoAnswers(['ie9'], '012E4BE3F016A5EB7BCABC303CE49B9F');
-      unflattenKeylistIntoAnswers(['ie8'], '3856EAAA6EA4A476851B3622EC4C4E9C');
-      unflattenKeylistIntoAnswers(['safari'], '796A2BD95BA9EBC8E92B5ABE11B207C9');
-      unflattenKeylistIntoAnswers(['opera'], '910741AAC1F68D0BF5AE94F664EF0F7A');
-      unflattenKeylistIntoAnswers(['ie6'], 'DDB6954FC87F02890B2C5818437ED92D');
-      unflattenKeylistIntoAnswers(['gecko1_8'], 'EFAA4BAA6736ED7D47E7BD4CCCD7A3E8');
+      unflattenKeylistIntoAnswers(['safari'], '4403379B848D563805112DE65C48AC51');
+      unflattenKeylistIntoAnswers(['opera'], '4FF17FF9E716A82031F4D04957C5C37B');
+      unflattenKeylistIntoAnswers(['ie9'], '6F27C2469E1C9344773D84F9095FDDAC');
+      unflattenKeylistIntoAnswers(['ie6'], '87281B486987F24C32A56F7E99F02375');
+      unflattenKeylistIntoAnswers(['ie8'], 'C6CE1DE560C454B7E5C3243B694F1B14');
+      unflattenKeylistIntoAnswers(['gecko1_8'], 'EE926A253E462DD1C6CC2013F8BFBCDA');
       strongName = answers[computePropValue('user.agent')];
       var idx = strongName.indexOf(':');
       if (idx != -1) {
@@ -369,6 +369,78 @@ function com_feller_picup_PickUp(){
   if (!__gwt_scriptsLoaded['qrcode.js']) {
     __gwt_scriptsLoaded['qrcode.js'] = true;
     document.write('<script language="javascript" src="' + base + 'qrcode.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['qrcode-gen.js']) {
+    __gwt_scriptsLoaded['qrcode-gen.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'qrcode-gen.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['grid.js']) {
+    __gwt_scriptsLoaded['grid.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'grid.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['version.js']) {
+    __gwt_scriptsLoaded['version.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'version.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['detector.js']) {
+    __gwt_scriptsLoaded['detector.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'detector.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['formatinf.js']) {
+    __gwt_scriptsLoaded['formatinf.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'formatinf.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['errorlevel.js']) {
+    __gwt_scriptsLoaded['errorlevel.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'errorlevel.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['bitmat.js']) {
+    __gwt_scriptsLoaded['bitmat.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'bitmat.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['datablock.js']) {
+    __gwt_scriptsLoaded['datablock.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'datablock.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['bmparser.js']) {
+    __gwt_scriptsLoaded['bmparser.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'bmparser.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['datamask.js']) {
+    __gwt_scriptsLoaded['datamask.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'datamask.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['rsdecoder.js']) {
+    __gwt_scriptsLoaded['rsdecoder.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'rsdecoder.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['gf256poly.js']) {
+    __gwt_scriptsLoaded['gf256poly.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'gf256poly.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['gf256.js']) {
+    __gwt_scriptsLoaded['gf256.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'gf256.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['decoder.js']) {
+    __gwt_scriptsLoaded['decoder.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'decoder.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['qrcode.js']) {
+    __gwt_scriptsLoaded['qrcode.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'qrcode.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['findpat.js']) {
+    __gwt_scriptsLoaded['findpat.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'findpat.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['alignpat.js']) {
+    __gwt_scriptsLoaded['alignpat.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'alignpat.js"><\/script>');
+  }
+  if (!__gwt_scriptsLoaded['databr.js']) {
+    __gwt_scriptsLoaded['databr.js'] = true;
+    document.write('<script language="javascript" src="' + base + 'databr.js"><\/script>');
   }
   $doc_0.write('<script defer="defer">com_feller_picup_PickUp.onInjectionDone(\'com.feller.picup.PickUp\')<\/script>');
 }

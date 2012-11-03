@@ -5,4 +5,22 @@
 	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
 	<entry-point class="com.feller.picup.client.PickUp"/>
 	<script src="qrcode.js"/>
+	<script src="qrcode-gen.js"/>
+	<script src="grid.js"/>
+	<script src="version.js"/>
+	<script src="detector.js"/>
+	<script src="formatinf.js"/>
+	<script src="errorlevel.js"/>
+	<script src="bitmat.js"/>
+	<script src="datablock.js"/>
+	<script src="bmparser.js"/>
+	<script src="datamask.js"/>
+	<script src="rsdecoder.js"/>
+	<script src="gf256poly.js"/>
+	<script src="gf256.js"/>
+	<script src="decoder.js"/>
+	<script src="qrcode.js"/>
+	<script src="findpat.js"/>
+	<script src="alignpat.js"/>
+	<script src="databr.js"/>
 </module>

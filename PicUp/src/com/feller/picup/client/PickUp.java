@@ -33,6 +33,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.TabPanel;
 
 
 /**
@@ -42,20 +44,36 @@ public class PickUp implements EntryPoint {
 	//private String getBacketURL = "http://ec2-23-22-164-102.compute-1.amazonaws.com/event";
 	private String getBacketURL = "http://localhost:80/event";
 	private Label errorLabel = new Label("");
-	private FlowPanel qrPannel = new FlowPanel();
+	private Label uploadLabel = new Label("");
+	private FlowPanel QRImagePanel = new FlowPanel();
 	private AWSUploadPanel Uploadpanel = new AWSUploadPanel("a","b");
-	
+	private FileUpload fileUpload = new FileUpload();
+	private TabPanel tabPanel = new TabPanel();
+
 
 	public void onModuleLoad() {
 		RootPanel rootPanel = RootPanel.get();
 
-		VerticalPanel mainPanel = new VerticalPanel();
-		rootPanel.add(mainPanel, 10, 10);
-		mainPanel.setSize("391px", "193px");
+		
+		tabPanel.setVisible(true);
+		tabPanel.setAnimationEnabled(true);
+		rootPanel.add(tabPanel, 0, 85);
+		tabPanel.setSize("561px", "343px");
+		tabPanel.add(Uploadpanel, "Upload Pics", false);
+		Uploadpanel.setSize("296px", "290px");
+		Uploadpanel.add(uploadLabel);
+		Uploadpanel.add(fileUpload);
+		fileUpload.setName("files[]");
 
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		mainPanel.add(horizontalPanel);
-		horizontalPanel.setSize("388px", "85px");
+		VerticalPanel generateQRPanel = new VerticalPanel();
+		tabPanel.add(generateQRPanel, "Generate QR Code", false);
+		tabPanel.selectTab(0);
+		
+		generateQRPanel.setSize("5cm", "3cm");
+
+		HorizontalPanel ButtonslPanel = new HorizontalPanel();
+		generateQRPanel.add(ButtonslPanel);
+		ButtonslPanel.setSize("218px", "36px");
 
 		Button getQRButton = new Button("get QR");
 		getQRButton.addClickHandler(new ClickHandler() {
@@ -63,7 +81,7 @@ public class PickUp implements EntryPoint {
 				getBucketURL();
 			}
 		});
-		horizontalPanel.add(getQRButton);
+		ButtonslPanel.add(getQRButton);
 
 		Button btnSendToBucket = new Button("send to Bucket");
 		btnSendToBucket.addClickHandler(new ClickHandler() {
@@ -71,26 +89,38 @@ public class PickUp implements EntryPoint {
 				generateUploadFrame();
 			}
 		});
-		horizontalPanel.add(btnSendToBucket);
+		ButtonslPanel.add(btnSendToBucket);
 
 
-		horizontalPanel.add(errorLabel);
-		
-		
-		mainPanel.add(qrPannel);
-		qrPannel.setWidth("197px");
-		
-		
-		mainPanel.add(Uploadpanel);
-		Uploadpanel.setWidth("190px");
+		ButtonslPanel.add(errorLabel);
+
+
+		generateQRPanel.add(QRImagePanel);
+		QRImagePanel.setWidth("197px");
 
 		Image picupImage = new Image("images/picUp.png");
-		mainPanel.add(picupImage);
+		rootPanel.add(picupImage, 7, 10);
+		fileUpload.getElement().setId("files");
+
+		if(!initQRcodeDecoderComponenets())
+		{
+			uploadLabel.setText("your browser does not support html5 capabilities.\n " +
+					"QR decoding won't work \n" +
+					"try using FireFox or chrome browser");
+		}
+		else
+		{
+			uploadLabel.setText("html5 capabilites are supported");
+		}
+
+		initFileReaderCallbacks(this);
 	}
+
+
 
 	protected void generateUploadFrame() {
 		Uploadpanel.addFrame();
-		
+
 	}
 
 	protected void getBucketURL() {
@@ -104,6 +134,7 @@ public class PickUp implements EntryPoint {
 
 				public void onResponseReceived(Request request, Response response) {
 					if (200 == response.getStatusCode()) {
+
 						urlToQR(response.getText());
 					} else {
 						displayError("couldn't retrieve JSON (" + response.getStatusCode()
@@ -116,37 +147,88 @@ public class PickUp implements EntryPoint {
 		}
 
 	}
-	
+
 	public void addQRImg(String imgTag)
 	{
-		qrPannel.add(new InlineHTML(imgTag));	
+		QRImagePanel.add(new InlineHTML(imgTag));	
 	}
+
+	protected native boolean initQRcodeDecoderComponenets()/*-{
+		function analyze(a)
+		{
+	   		alert(a);
+		}
+
+		function isCanvasSupported(){
+  			var elem = document.createElement('canvas');
+			return !!(elem.getContext && elem.getContext('2d'));
+		}
+
+		if(isCanvasSupported() && window.File && window.FileReader)
+		{
+			$wnd.qrcode.callback = analyze;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+
+
+	}-*/;
+
 
 	protected native void urlToQR(String text)/*-{
 
-	  var qr = $wnd.qrcode(4,'M');
+	  var qr = $wnd.genQRcode(4,'M');
 	  if(qr != null)
 	  {
 	  	qr.addData(text);
 	  	qr.make();
 	  	var img = qr.createImgTag();
+
 	  	if(img != null)
 	  	{
 	  		this.@com.feller.picup.client.PickUp::addQRImg(Ljava/lang/String;)(img);
 	  	}
 	  }
-	  
+
 	}-*/;
+
+	protected native void initFileReaderCallbacks(PickUp obj)/*-{
+
+		function handleFileSelect(evt) {
+	    var files = evt.target.files; // FileList object
+	    for (var i = 0, f; f = files[i]; i++) {
+
+	      // Only process image files.
+	      if (!f.type.match('image.*')) {
+	      	alert(f.name + ' is not an image!');
+	        continue;
+	      }
+
+	      var reader = new FileReader();
+
+	      // Closure to capture the file information.
+	      reader.onload = (function(theFile) {
+	        return function(e) {
+	           $wnd.qrcode.decode(e.target.result);
+	        };
+	      })(f);
+
+	      // Read in the image file as a data URL.
+	      reader.readAsDataURL(f);
+	    }
+	  }
+
+  	  $wnd.files.addEventListener('change', handleFileSelect, false);
+
+	}-*/;
+
 	protected void displayError(String string) {
 
 		Date d = new Date();
 		errorLabel.setText(string + " - " + d.toLocaleString() + getBacketURL);
-		
-		//decode the barcode
-		QRCodeReader reader = new QRCodeReader();
-//		if (reader == null)
-//		{
-//			errorLabel.setText("a");
-//		}
 	}
 }

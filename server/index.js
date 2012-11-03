@@ -62,4 +62,4 @@ route.get('/event', function(req, res) {
     });
 });
 
-http.createServer(route).listen(8080);
+http.createServer(route).listen(80);
