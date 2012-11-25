@@ -21,6 +21,13 @@ var threeDayRule = {
   'ID'     : '3daysRule'
 }
 
+var cors = {'CORSRule':{
+  'AllowedOrigin' : '*',
+  'AllowedMethod' : ['POST', 'PUT', 'GET'],
+  'AllowedHeader' : '*',
+  'MaxAgeSeconds' : '3000'
+}}
+
 route.get('/', function(req, res) {
   res.writeHead(200);
   res.end('hello index page');
@@ -42,8 +49,8 @@ route.get('/event', function(req, res) {
     Acl:'public-read-write'}, function(err, data){
       if (err) {
         res.writeHead(400);
-        res.end(err);
-        util.log(err);
+        res.end(err.message);
+        util.log(util.inspect(err, true, null));
         return;
       }
       var bucketName = data.Headers.location.slice(1);
@@ -51,13 +58,22 @@ route.get('/event', function(req, res) {
         Rules:[threeDayRule]}, function(err, data) {
           if (err) {
             res.writeHead(400);
-            res.end(err);
-            util.log(err);
+            res.end('PutBucketLifecycle error');
+            util.log(util.inspect(err, true, null));
             return;
           }
-          res.writeHead(200);
-          res.end(bucketName);
-          util.log(util.inspect(data, true, null));
+          s3.PutBucketCors({BucketName:bucketName,
+            CorsConfiguration:[cors]}, function(err, data) {
+              if (err) {
+                res.writeHead(400);
+                res.end('PutBucketCors error');
+                util.log(util.inspect(err, true, null));
+                return;
+              }
+              res.writeHead(200);
+              res.end(bucketName);
+              util.log(util.inspect(data, true, null));
+            });
         });
     });
 });
