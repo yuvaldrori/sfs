@@ -16,7 +16,7 @@
   "author": "Yuval Drori & Amit Feller",
   "license": "BSD",
   "dependencies": {
-    "awssum": "",
+    "awssum": "> 0.12.1",
     "node-static": "",
     "node-uuid": "",
     "router": ""
