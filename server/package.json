@@ -1,7 +1,7 @@
 {
-  "name": "sfs",
-  "version": "0.0.0",
-  "description": "Simple files sharing",
+  "name": "sfs_server",
+  "version": "0.0.1",
+  "description": "Simple files sharing server",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,7 +16,6 @@
   "author": "Yuval Drori & Amit Feller",
   "license": "BSD",
   "dependencies": {
-    "awssum": "> 0.12.1",
     "node-static": "",
     "node-uuid": "",
     "router": ""
