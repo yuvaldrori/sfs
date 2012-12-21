@@ -33,23 +33,30 @@ route.post('/list', function(req, res) {
   var data = '';
   req.addListener('data', function(chunk) { data += chunk; });
   req.addListener('end', function() {
-    params = JSON.parse(data);
-    if (params.Prefix === undefined || params.Prefix === '') {
+    try {
+      params = JSON.parse(data);
+    } catch (e) {
       res.writeHead(400);
-      res.end('will not list root');
+      res.end('bad json');
+      return;
+    }
+    if (params.Prefix === undefined || params.Prefix === ''||
+        params.Prefix.charAt(params.Prefix.length - 1) !== '/') {
+      res.writeHead(400);
+      res.end('will not list');
       return;
     }
     params.Bucket = sfsBucket;
     var s3 = new AWS.S3();
     s3.client.listObjects(params, function(err, data) {
-      console.log('2222');
       if (err) {
         res.writeHead(400);
         res.end('aws error');
         return;
       }
-      res.writeHead(200);
-      res.end(util.inspect(data, true, null));
+      res.writeHead(200, {'content-type': 'text/json'});
+      res.write(JSON.stringify(data));
+      res.end();
     });
   });
 });
