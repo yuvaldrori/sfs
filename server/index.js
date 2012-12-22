@@ -3,27 +3,18 @@ var http = require('http');
 var router = require('router');
 var route = router();
 var uuid = require('node-uuid');
-var awssum = require('awssum');
-var amazon = awssum.load('amazon/amazon');
-var S3 = awssum.load('amazon/s3').S3;
 var static = require('node-static');
+var AWS = require('aws-sdk');
 
-var awsAccessKeyID=process.env.AWSAccessKeyID;
-var awsAccountID=process.env.AWSAccountID;
-var awsSecretAccessKey=process.env.AWSSecretAccessKey;
+AWS.config.update({region: 'us-east-1'});
+
+var sfsBucket=process.env.sfsBucket;
 
 process.chdir(__dirname);
 
-var threeDayRule = {
-  'Prefix' : '',
-  'Status' : 'Enabled',
-  'Days'   : 3,
-  'ID'     : '3daysRule'
-}
-
 route.get('/', function(req, res) {
   res.writeHead(200);
-  res.end('hello index page');
+  res.end('sfs');
 });
 
 var file = new(static.Server)('./static');
@@ -32,34 +23,42 @@ route.get('/app/*', function(req, res) {
 });
 
 route.get('/event', function(req, res) {
-  var s3 = new S3({
-    'accessKeyId' : awsAccessKeyID,
-    'secretAccessKey' : awsSecretAccessKey,
-    'region' : amazon.US_EAST_1
-  });
+  var eventName = uuid.v4();
+  res.writeHead(200);
+  res.end(sfsBucket + ':' + eventName);
+});
 
-  s3.CreateBucket({BucketName:'sfs_' + uuid.v4(),
-    Acl:'public-read-write'}, function(err, data){
+route.post('/list', function(req, res) {
+
+  var data = '';
+  req.addListener('data', function(chunk) { data += chunk; });
+  req.addListener('end', function() {
+    try {
+      params = JSON.parse(data);
+    } catch (e) {
+      res.writeHead(400);
+      res.end('bad json');
+      return;
+    }
+    if (params.Prefix === undefined || params.Prefix === ''||
+        params.Prefix.charAt(params.Prefix.length - 1) !== '/') {
+      res.writeHead(400);
+      res.end('will not list');
+      return;
+    }
+    params.Bucket = sfsBucket;
+    var s3 = new AWS.S3();
+    s3.client.listObjects(params, function(err, data) {
       if (err) {
         res.writeHead(400);
-        res.end(err);
-        util.log(err);
+        res.end('aws error');
         return;
       }
-      var bucketName = data.Headers.location.slice(1);
-      s3.PutBucketLifecycle({BucketName:bucketName,
-        Rules:[threeDayRule]}, function(err, data) {
-          if (err) {
-            res.writeHead(400);
-            res.end(err);
-            util.log(err);
-            return;
-          }
-          res.writeHead(200);
-          res.end(bucketName);
-          util.log(util.inspect(data, true, null));
-        });
+      res.writeHead(200, {'content-type': 'text/json'});
+      res.write(JSON.stringify(data));
+      res.end();
     });
+  });
 });
 
 http.createServer(route).listen(80);
