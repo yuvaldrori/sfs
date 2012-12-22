@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pick Up</title>
+	<link href="bootstrap1.min.css" rel="stylesheet">
+	<link href="domtab.css" rel="stylesheet">
+	
+	
+	<style type="text/css">
+	#previewImages {width:500px;height:500px;padding:10px;border:1px solid #aaaaaa;}
+	</style>
+
+  </head>
+  <body>
+   
+    <div class="domtab">
+	  <ul class="domtabs">
+		<li><a href="#uploadPics">Uploading Pics</a></li>
+		<li><a href="#generateQR">Generate QR</a></li>
+		<li><a href="#getPics">Get Pictures</a></li>
+	  </ul>
+	  
+	  <div>
+		<h2><a name="uploadPics" id="uploadPics">Uploading Pics</a></h2>
+			<div id="container"> 
+			<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+			<div class="row fileupload-buttonbar">
+				<div class="span7">
+					<!-- The fileinput-button span is used to style the file input field as button -->
+					<span class="btn btn-success fileinput-button">
+						<i class="icon-plus icon-white"></i>
+						<span>Add files...</span>
+						<input type="file" name="files[]" id="filesUploader" multiple>
+					</span>
+					<button type="button" id="uploadBtn" class="btn btn-primary start">
+						<i class="icon-upload icon-white"></i>
+						<span>Start upload</span>
+					</button>
+					<button type="reset" class="btn btn-warning cancel">
+						<i class="icon-ban-circle icon-white"></i>
+						<span>Cancel upload</span>
+					</button>
+					<button type="button" class="btn btn-danger delete">
+						<i class="icon-trash icon-white"></i>
+						<span>Delete</span>
+					</button>
+				</div>
+				<!-- The global progress information -->
+				<div class="span5 fileupload-progress fade">
+					<!-- The global progress bar -->
+					<div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+						<div class="bar" style="width:0%;"></div>
+					</div>
+					<!-- The extended global progress information -->
+					<div class="progress-extended">&nbsp;</div>
+				</div>
+			</div>
+			<!-- The loading indicator is shown during file processing -->
+			<div class="fileupload-loading"></div>
+			<br>
+			<!-- The table listing the files available for upload/download -->
+			<div id="previewImages">
+				<div id="helpInfo">
+					<h2> drag & drop or select files for upload</h2>
+				</div>
+				<table role="presentation" class="table table-striped" >
+					<!-- <caption>uploading Pics</caption> -->
+					<tbody id="previewTable" class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<p><a href="#top">back to menu</a></p>
+	  </div>
+	  <div>
+		<h2><a name="generateQR" id="generateQR">generate QR code</a></h2>
+		<div>
+			<div>
+				<p>
+					<button type="button" id="genQrBtn" class="btn btn-primary">
+						<i class="icon-trash icon-white"></i>
+						<span>generate QR code</span>
+					</button>
+				</p>
+			</div>
+			<div id="QRImage">
+			</div>
+		</div>
+		<p><a href="#top">back to menu</a></p>
+	  </div>
+	  <div>
+		<h2><a name="getPics" id="getPics">Get Pictures</a></h2>
+		<p><a href="#top">back to menu</a></p>
+	  </div>
+	  
+	
+	</div>
+
+    
+	
+    <script src="jquery.js"></script>
+	<script src="qrcode.js"></script>
+	<script src="qrcode-gen.js"></script>
+	<script src="grid.js"></script>
+	<script src="version.js"></script>
+	<script src="detector.js"></script>
+	<script src="formatinf.js"></script>
+	<script src="errorlevel.js"></script>
+	<script src="bitmat.js"></script>
+	<script src="datablock.js"></script>
+	<script src="bmparser.js"></script>
+	<script src="datamask.js"></script>
+	<script src="rsdecoder.js"></script>
+	<script src="gf256poly.js"></script>
+	<script src="gf256.js"></script>
+	<script src="decoder.js"></script>
+	<script src="qrcode.js"></script>
+	<script src="findpat.js"></script>
+	<script src="alignpat.js"></script>
+	<script src="databr.js"></script>
+	<script src="AwsUploadFiles.js"></script>
+	<script src="domtab.js"></script>
+    <script>
+	
+	
+	
+	function handleDragEnter(e) {
+	  e.stopPropagation();
+	  e.preventDefault();
+	}
+
+	function handleDragOver(e) {
+	  e.stopPropagation();
+	  e.preventDefault();
+	}
+	
+	function handleFileDrop(e) {
+	  e.stopPropagation();
+	  e.preventDefault();
+
+	  var dt = e.originalEvent.dataTransfer;
+	  var files = dt.files;
+	  handleFiles(files);
+	}
+
+	
+	function QRcallback(bucketName)
+	{
+		AWSFiles.bucketName = bucketName;
+	}
+
+	function isCanvasSupported(){
+			var elem = document.createElement('canvas');
+		return !!(elem.getContext && elem.getContext('2d'));
+	}
+
+
+		
+		
+	  function preview(file,i)
+	  {
+		var el, img, progress, reader;
+		var usePrevRow   = (i % 3);
+		var	previewRowNum  = Math.floor(i/3);
+		reader = new FileReader();
+		if(!usePrevRow)
+		{
+			$("#previewTable").append('<tr class="span3" id="previewRow'+previewRowNum+'"></tr>');
+		}
+		el = $(	'<td>'+
+					'<div class="thumbnail">' +
+							'<img class="img-rounded" width="150" height="150">' +
+						'<div class="caption">'+
+							'<p>' + file.name + '</p>'+
+							'<div class="progress progress-striped">'+
+								'<div class="bar" style="width: 0%;">'+
+								'</div>'+
+							'</div>'+
+							'<p>'+
+							'</p>'+
+						'</div>'+
+					'</div>'+
+				'</td>');
+		$("#previewRow"+previewRowNum).append(el);
+		img = $("img", el);
+		reader.onload = function(e) {
+		  qrcode.decode(e.target.result);
+		  return img.attr('src', e.target.result);
+		};
+		reader.readAsDataURL(file);
+		return el;
+	  }
+	  
+	  function handleFiles(files)
+	  {
+		AWSFiles.Init();
+		
+		var file,elem;
+		$("#previewTable").children().remove();
+		for(var i=0; i < files.length ; i++)
+		{
+			file = files[i];
+			if (!file.type.match('image.*')) {
+				alert(file.name + ' is not an image!');
+				continue;
+			}
+			
+			elem = preview(file,i);
+			AWSFiles.addFile(file,elem);
+		}
+	  }
+		  
+	  function handleFileSelect(event)
+	  {
+		var files = event.target.files;
+		handleFiles(files);
+	  }
+		  
+	  function handleFileupload()
+	  {
+		AWSFiles.upload();
+	  }
+	  
+	  
+		function createCORSRequest(method, url) {
+		  var xhr = new XMLHttpRequest();
+		  if ("withCredentials" in xhr) {
+			// XHR for Chrome/Firefox/Opera/Safari.
+			xhr.open(method, url, true);
+		  } else if (typeof XDomainRequest != "undefined") {
+			// XDomainRequest for IE.
+			xhr = new XDomainRequest();
+			xhr.open(method, url);
+		  } else {
+			// CORS not supported.
+			xhr = null;
+		  }
+		  return xhr;
+		}
+
+	  function handleGenQR()
+	  {
+			var url = "http://localhost:80/event";
+			xhr = createCORSRequest('GET', url);
+
+			xhr.onload = function(e) {
+				if(xhr.readyState == 4 )
+				{
+					if (xhr.status == 200) {
+						  var qr = genQRcode(4,'M');
+						  if(qr != null)
+						  {
+							qr.addData(xhr.responseText);
+							qr.make();
+							var img = qr.createImgTag();
+
+							if(img != null)
+							{
+								$('#genQrBtn').append(img);
+							}
+						  }
+					}
+				}
+			};
+
+			xhr.send();
+	  }
+	  
+	  
+	  $(document).ready(function(){
+			//$("a").click(function(event){
+			//   event.preventDefault();
+			//   $(this).hide("slow");
+			// });
+			 
+			if(isCanvasSupported() && window.File && window.FileReader)
+			{
+				//alert('canvas supporeted');
+				qrcode.callback = QRcallback;
+			}
+			else
+			{
+				alert('canvas is not supported try using chrome or FFmozila browsers');
+			}
+		
+		});
+				 
+		$('#filesUploader').bind('change', handleFileSelect);
+		$('#uploadBtn').bind('click', handleFileupload);
+		$('#previewImages').bind('dragenter', handleDragEnter);
+		$('#previewImages').bind('dragover', handleDragOver);
+		$('#previewImages').bind('drop', handleFileDrop);
+		$('#genQrBtn').bind('click', handleGenQR);
+		
+    </script>
+  </body>
+</html>
