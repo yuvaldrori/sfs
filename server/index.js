@@ -6,6 +6,12 @@ var uuid = require('node-uuid');
 var static = require('node-static');
 var AWS = require('aws-sdk');
 
+if (process.env.AWS_SECRET_ACCESS_KEY === undefined ||
+    process.env.AWS_ACCESS_KEY_ID === undefined) {
+  console.log('Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables');
+  return;
+}
+
 AWS.config.update({region: 'us-east-1'});
 
 var sfsBucket=process.env.sfsBucket;
