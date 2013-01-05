@@ -3,12 +3,28 @@
   <head>
     <meta charset="utf-8">
     <title>Pick Up</title>
-	<link href="bootstrap1.min.css" rel="stylesheet">
 	<link href="domtab.css" rel="stylesheet">
+	<link href="bootstrap.css" rel="stylesheet">
+	
+	
+	<!-- Bootstrap CSS Toolkit styles -->
+	<link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap.min.css">
+	<!-- Bootstrap styles for responsive website layout, supporting different screen sizes -->
+	<link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
+	<!-- Bootstrap CSS fixes for IE6 -->
+	<!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-->
+	<!-- Bootstrap Image Gallery styles -->
+	<link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
+	<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+	<link rel="stylesheet" href="css/jquery.fileupload-ui.css">
+	<!-- CSS adjustments for browsers with JavaScript disabled -->
+	<noscript><link rel="stylesheet" href="css/jquery.fileupload-ui-noscript.css"></noscript>
+
 	
 	
 	<style type="text/css">
 	#previewImages {width:500px;height:500px;padding:10px;border:1px solid #aaaaaa;}
+		
 	</style>
 
   </head>
@@ -26,11 +42,11 @@
 			<div id="container"> 
 			<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
 			<div class="row fileupload-buttonbar">
-				<div class="span7">
+				<div class="buttonsBar">
 					<!-- The fileinput-button span is used to style the file input field as button -->
 					<span class="btn btn-success fileinput-button">
 						<i class="icon-plus icon-white"></i>
-						<span>Add files...</span>
+						<span>Add files</span>
 						<input type="file" name="files[]" id="filesUploader" multiple>
 					</span>
 					<button type="button" id="uploadBtn" class="btn btn-primary start">
@@ -79,18 +95,32 @@
 			<div>
 				<p>
 					<button type="button" id="genQrBtn" class="btn btn-primary">
-						<i class="icon-trash icon-white"></i>
 						<span>generate QR code</span>
 					</button>
 				</p>
 			</div>
-			<div id="QRImage">
-			</div>
+			
+		</div>
+		<div id="QRImage">
 		</div>
 		<p><a href="#top">back to menu</a></p>
 	  </div>
 	  <div>
 		<h2><a name="getPics" id="getPics">Get Pictures</a></h2>
+		<span class="btn btn-success fileinput-button">
+			<i class="icon-plus icon-white"></i>
+			<span>Select File</span>
+			<input type="file"  id="downloadFiles">
+		</span>
+		
+		<div id="downloadedPreview">
+		</div>
+		
+		<table role="presentation" class="table table-striped" >
+			<tbody id="downloadedPreview" class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+			</tbody>
+		</table>
+					
 		<p><a href="#top">back to menu</a></p>
 	  </div>
 	  
@@ -120,29 +150,14 @@
 	<script src="alignpat.js"></script>
 	<script src="databr.js"></script>
 	<script src="AwsUploadFiles.js"></script>
+	<script src="AwsListFiles.js"></script>
+	<script src="newEvent.js"></script>
 	<script src="domtab.js"></script>
     <script>
 	
 	
 	
-	function handleDragEnter(e) {
-	  e.stopPropagation();
-	  e.preventDefault();
-	}
 
-	function handleDragOver(e) {
-	  e.stopPropagation();
-	  e.preventDefault();
-	}
-	
-	function handleFileDrop(e) {
-	  e.stopPropagation();
-	  e.preventDefault();
-
-	  var dt = e.originalEvent.dataTransfer;
-	  var files = dt.files;
-	  handleFiles(files);
-	}
 
 	
 	function QRcallback(bucketName)
@@ -156,142 +171,36 @@
 	}
 
 
-		
-		
-	  function preview(file,i)
-	  {
-		var el, img, progress, reader;
-		var usePrevRow   = (i % 3);
-		var	previewRowNum  = Math.floor(i/3);
-		reader = new FileReader();
-		if(!usePrevRow)
+
+	  
+	  
+
+
+  $(document).ready(function(){
+		//$("a").click(function(event){
+		//   event.preventDefault();
+		//   $(this).hide("slow");
+		// });
+		 
+		if(isCanvasSupported() && window.File && window.FileReader)
 		{
-			$("#previewTable").append('<tr class="span3" id="previewRow'+previewRowNum+'"></tr>');
+			//alert('canvas supporeted');
+			qrcode.callback = QRcallback;
 		}
-		el = $(	'<td>'+
-					'<div class="thumbnail">' +
-							'<img class="img-rounded" width="150" height="150">' +
-						'<div class="caption">'+
-							'<p>' + file.name + '</p>'+
-							'<div class="progress progress-striped">'+
-								'<div class="bar" style="width: 0%;">'+
-								'</div>'+
-							'</div>'+
-							'<p>'+
-							'</p>'+
-						'</div>'+
-					'</div>'+
-				'</td>');
-		$("#previewRow"+previewRowNum).append(el);
-		img = $("img", el);
-		reader.onload = function(e) {
-		  qrcode.decode(e.target.result);
-		  return img.attr('src', e.target.result);
-		};
-		reader.readAsDataURL(file);
-		return el;
-	  }
-	  
-	  function handleFiles(files)
-	  {
-		AWSFiles.Init();
-		
-		var file,elem;
-		$("#previewTable").children().remove();
-		for(var i=0; i < files.length ; i++)
+		else
 		{
-			file = files[i];
-			if (!file.type.match('image.*')) {
-				alert(file.name + ' is not an image!');
-				continue;
-			}
-			
-			elem = preview(file,i);
-			AWSFiles.addFile(file,elem);
+			alert('canvas is not supported try using chrome or FFmozila browsers');
 		}
-	  }
-		  
-	  function handleFileSelect(event)
-	  {
-		var files = event.target.files;
-		handleFiles(files);
-	  }
-		  
-	  function handleFileupload()
-	  {
-		AWSFiles.upload();
-	  }
-	  
-	  
-		function createCORSRequest(method, url) {
-		  var xhr = new XMLHttpRequest();
-		  if ("withCredentials" in xhr) {
-			// XHR for Chrome/Firefox/Opera/Safari.
-			xhr.open(method, url, true);
-		  } else if (typeof XDomainRequest != "undefined") {
-			// XDomainRequest for IE.
-			xhr = new XDomainRequest();
-			xhr.open(method, url);
-		  } else {
-			// CORS not supported.
-			xhr = null;
-		  }
-		  return xhr;
-		}
-
-	  function handleGenQR()
-	  {
-			var url = "http://localhost:80/event";
-			xhr = createCORSRequest('GET', url);
-
-			xhr.onload = function(e) {
-				if(xhr.readyState == 4 )
-				{
-					if (xhr.status == 200) {
-						  var qr = genQRcode(4,'M');
-						  if(qr != null)
-						  {
-							qr.addData(xhr.responseText);
-							qr.make();
-							var img = qr.createImgTag();
-
-							if(img != null)
-							{
-								$('#genQrBtn').append(img);
-							}
-						  }
-					}
-				}
-			};
-
-			xhr.send();
-	  }
-	  
-	  
-	  $(document).ready(function(){
-			//$("a").click(function(event){
-			//   event.preventDefault();
-			//   $(this).hide("slow");
-			// });
+	
+	});
 			 
-			if(isCanvasSupported() && window.File && window.FileReader)
-			{
-				//alert('canvas supporeted');
-				qrcode.callback = QRcallback;
-			}
-			else
-			{
-				alert('canvas is not supported try using chrome or FFmozila browsers');
-			}
-		
-		});
-				 
-		$('#filesUploader').bind('change', handleFileSelect);
-		$('#uploadBtn').bind('click', handleFileupload);
-		$('#previewImages').bind('dragenter', handleDragEnter);
-		$('#previewImages').bind('dragover', handleDragOver);
-		$('#previewImages').bind('drop', handleFileDrop);
-		$('#genQrBtn').bind('click', handleGenQR);
+	$('#filesUploader').bind('change', handleFileSelect);
+	$('#downloadFiles').bind('change', handleDownloadFiles);
+	$('#uploadBtn').bind('click', handleFileupload);
+	$('#previewImages').bind('dragenter', handleDragEnter);
+	$('#previewImages').bind('dragover', handleDragOver);
+	$('#previewImages').bind('drop', handleFileDrop);
+	$('#genQrBtn').bind('click', handleGenQR);
 		
     </script>
   </body>

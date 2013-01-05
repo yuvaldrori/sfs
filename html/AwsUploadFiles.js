@@ -1,11 +1,27 @@
 
+function handleDragEnter(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function handleDragOver(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function handleFileDrop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+
+  var dt = e.originalEvent.dataTransfer;
+  var files = dt.files;
+  handleFiles(files);
+}
+		
 function AWSFile (file,elem) {
     this.file = file;
     this.elem = elem;
 }
-
-
-
 
 AWSFiles = {};
 AWSFiles.files = [];
@@ -23,9 +39,11 @@ AWSFiles.upload = function()
 		} 
 		else 
 		{
-			var url = "https://"+this.bucketName+".s3.amazonaws.com/"
+			var bucketName = this.bucketName.split(":")[0];
+			var folderName = this.bucketName.split(":")[1];
+			var url = "https://"+bucketName+".s3.amazonaws.com/"
 			var fd = new FormData();
-			fd.append("key","amit/${filename}");
+			fd.append("key",folderName + "/${filename}");
 			fd.append("acl","public-read");
 			fd.append("Content-Type","image/jpeg'");
 			fd.append('file', file);
@@ -64,6 +82,75 @@ function displayUploadProgress(el, event){
       return $(".caption p", el).text("" + percent + "% uploaded");
     }
   };
+  
+  
+  		
+		
+  function preview(file,i)
+  {
+	var el, img, progress, reader;
+	var usePrevRow   = (i % 3);
+	var	previewRowNum  = Math.floor(i/3);
+	reader = new FileReader();
+	if(!usePrevRow)
+	{
+		$("#previewTable").append('<tr class="span3" id="previewRow'+previewRowNum+'"></tr>');
+	}
+	el = $(	'<td>'+
+				'<div class="thumbnail">' +
+						'<img class="img-rounded" width="150" height="150">' +
+					'<div class="caption">'+
+						'<p>' + file.name + '</p>'+
+						'<div class="progress progress-striped">'+
+							'<div class="bar" style="width: 0%;">'+
+							'</div>'+
+						'</div>'+
+						'<p>'+
+						'</p>'+
+					'</div>'+
+				'</div>'+
+			'</td>');
+	$("#previewRow"+previewRowNum).append(el);
+	img = $("img", el);
+	reader.onload = function(e) {
+	  qrcode.decode(e.target.result);
+	  return img.attr('src', e.target.result);
+	};
+	reader.readAsDataURL(file);
+	return el;
+  }
+  
+  function handleFiles(files)
+  {
+	AWSFiles.Init();
+	
+	var file,elem;
+	$("#previewTable").children().remove();
+	for(var i=0; i < files.length ; i++)
+	{
+		file = files[i];
+		if (!file.type.match('image.*')) {
+			alert(file.name + ' is not an image!');
+			continue;
+		}
+		
+		elem = preview(file,i);
+		AWSFiles.addFile(file,elem);
+	}
+  }
+	  
+  function handleFileSelect(event)
+  {
+	var files = event.target.files;
+	qrcode.callback = QRcallback;
+	handleFiles(files);
+  }
+	  
+  function handleFileupload()
+  {
+	AWSFiles.upload();
+  }
+	  
   
 function sendForm(form,el,url)
 {
