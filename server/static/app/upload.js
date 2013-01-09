@@ -1,3 +1,20 @@
+function isCanvasSupported(){
+  var elem = document.createElement('canvas');
+  return !!(elem.getContext && elem.getContext('2d'));
+}
+
+function QRcallback(bucketName) {
+	AWSFiles.bucketName = bucketName;
+}
+
+$(document).ready(function(){
+  if(isCanvasSupported() && window.File && window.FileReader) {
+    qrcode.callback = QRcallback;
+  }
+  else {
+    alert('Please get a better browser!');
+  }
+});
 
 function handleDragEnter(e) {
   e.stopPropagation();
@@ -33,12 +50,6 @@ AWSFiles.upload = function()
 		var file = AWSFiles.files[i].file;
 		var el = AWSFiles.files[i].elem;
 
-		if (file.size > (3 * 1024 * 1024)) 
-		{
-		  return $(".caption p", el).text("Sorry, file's too big!");
-		} 
-		else 
-		{
 			var bucketName = this.bucketName.split(":")[0];
 			var folderName = this.bucketName.split(":")[1];
 			var url = "https://"+bucketName+".s3.amazonaws.com/"
@@ -74,7 +85,6 @@ AWSFiles.upload = function()
 					xhr.open("POST", url, true);
 					xhr.send(fd2);
 				}
-			}
 	  
 			sendForm(fd,AWSFiles.files[i].elem,url);
 		}
@@ -175,9 +185,8 @@ function displayUploadProgress(el, event){
 	}
   }
 	  
-  function handleFileSelect(event)
+  function handleFileSelect(files)
   {
-	var files = event.target.files;
 	qrcode.callback = QRcallback;
 	handleFiles(files);
   }
