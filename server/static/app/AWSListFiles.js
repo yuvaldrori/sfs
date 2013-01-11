@@ -1,9 +1,17 @@
  
-function addImageThumbnail(fileName,awsBucketName)
+function addImageThumbnail(key,awsBucketName,perfix)
 {
+	var fileName = key.split("/")[1];
+	var indexOfPerfix = fileName.indexOf(perfix);
+	
+	//filename does not start with "thum_"
+    if( indexOfPerfix != 0) return;
+	
+	
 	var td = document.createElement('td');
-	var name = document.createElement('b');
-	var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+	var name = document.createElement('b');                       //removing the perfix from the file name
+	var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + key.replace(perfix,"");
+	alert(fileName);
 	var link = document.createElement('a');
 	var img = new Image(150,150);
 	link.href = url;
@@ -12,22 +20,21 @@ function addImageThumbnail(fileName,awsBucketName)
 	img.onload = function() {
 		$('#downloadedPreview').append(td);
 	}
-	name.innerHTML = fileName.split("/")[1];
+	name.innerHTML = fileName.substring(perfix.length); //filename without perfix
 	link.appendChild(img);
 	td.appendChild(link);
 	td.appendChild(name);
 	
 }
 
-function downloadFiles(JSONresponse)
+function downloadFiles(JSONresponse,perfix)
 {
 	
 	var listObjects = JSON.parse(JSONresponse);
 	if(listObjects.Contents && listObjects.Name)
 	{
 		$(listObjects.Contents).each(function() {  
-			var fileName = this.Key;
-			addImageThumbnail(fileName,listObjects.Name);
+			addImageThumbnail(this.Key,listObjects.Name,perfix);
 		});
 	}
 }
@@ -47,12 +54,13 @@ function getFilesList(decodedQR)
 	data["Prefix"] = folderName + '/';
 	data["Delimeter"] = "";
 
+	alert(JSON.stringify(data));
     xhr.send(JSON.stringify(data));
     xhr.onloadend = function () {
       if(xhr.readyState == 4 )
 	  {
 		if (xhr.status == 200) {
-			downloadFiles(xhr.responseText);
+			downloadFiles(xhr.responseText,"thumb_");
 		}
 	  }
 						

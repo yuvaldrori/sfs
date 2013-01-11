@@ -33,7 +33,7 @@ AWSFiles.upload = function()
 		var file = AWSFiles.files[i].file;
 		var el = AWSFiles.files[i].elem;
 
-		if (file.size > (3 * 1024 * 1024)) 
+		if (file.size > (10 * 1024 * 1024)) //10MB limitation per picture
 		{
 		  return $(".caption p", el).text("Sorry, file's too big!");
 		} 
@@ -50,31 +50,33 @@ AWSFiles.upload = function()
 			
 			var img = new Image();
 			img.src = $("img",el).attr('src');
-			img.onload = function()
+			img.onload = (function(f,addr,folder,image)
 			{
-				alert('entered');
-				var minImageData =  resizeImage(img,0.5,file.type);
-				 
-				//decode the base64 binary into am ArrayBuffer 
-			    var separator = 'base64,';  
-				var index = minImageData.indexOf(separator);  
-				if (index != -1) {  
-	
-					var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
-					var dv = new DataView(barray);
-					var blob = new Blob([dv],{type:file.type}); 
-
-					var fd2 = new FormData();
-					fd2.append("key",folderName + "/${filename}");
-					fd2.append("acl","public-read");
-					fd2.append("Content-Type",file.type);
-					fd2.append('file', blob, "thumb_"+file.name);
-					
-					var xhr = new XMLHttpRequest();
-					xhr.open("POST", url, true);
-					xhr.send(fd2);
+				return function()
+				{
+					var minImageData =  resizeImage(image,0.5,f.type);
+					 
+					//decode the base64 binary into am ArrayBuffer 
+					var separator = 'base64,';  
+					var index = minImageData.indexOf(separator);  
+					if (index != -1) {  
+		
+						var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
+						var dv = new DataView(barray);
+						var blob = new Blob([dv],{type:f.type}); 
+						alert("a " + f.name);
+						var fd2 = new FormData();
+						fd2.append("key",folder + "/${filename}");
+						fd2.append("acl","public-read");
+						fd2.append("Content-Type",f.type);
+						fd2.append('file', blob,"thumb_"+f.name);
+						
+						var xhr = new XMLHttpRequest();
+						xhr.open("POST", addr, true);
+						xhr.send(fd2);
+					}
 				}
-			}
+			})(file,url,folderName,img);
 	  
 			sendForm(fd,AWSFiles.files[i].elem,url);
 		}
