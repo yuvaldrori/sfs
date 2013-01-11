@@ -16,8 +16,7 @@ function createCORSRequest(method, url) {
 
 function handleGenQR()
 {
-	//TODO: replace this!!
-	var url = "http://localhost:80/event";
+	var url = window.location.origin + '/event';
 	xhr = createCORSRequest('GET', url);
 
 	xhr.onload = function(e) {
@@ -35,7 +34,7 @@ function handleGenQR()
 					{
 						$('#genQrBtn').append(img);
 					}
-				  }
+  		  }
 			}
 		}
 	};

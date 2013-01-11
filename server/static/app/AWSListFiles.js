@@ -43,13 +43,12 @@ function getFilesList(decodedQR)
 	var bucketName = decodedQR.split(":")[0];
 	var folderName = decodedQR.split(":")[1];
 	
-	//TODO: replace this url!!
-	var url = "http://localhost:80/list";
+	var url = window.location.origin + '/list';
 	var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
-    // send the collected data as JSON
+  // send the collected data as JSON
 	var data = {};
 	data["Prefix"] = folderName + '/';
 	data["Delimeter"] = "";
@@ -80,3 +79,4 @@ function getFilesList(decodedQR)
 	};
 	reader.readAsDataURL(file);
   }
+

@@ -14,19 +14,10 @@ if (process.env.AWS_SECRET_ACCESS_KEY === undefined ||
 
 AWS.config.update({region: 'us-east-1'});
 
-var sfsBucket=process.env.sfsBucket;
+var sfsBucket = process.env.SFSBUCKET;
+var port = (process.env.SFSPORT === undefined) ? 80 : process.env.SFSPORT;
 
 process.chdir(__dirname);
-
-route.get('/', function(req, res) {
-  res.writeHead(200);
-  res.end('sfs');
-});
-
-var file = new(static.Server)('./static');
-route.get('/app/*', function(req, res) {
-  file.serve(req, res);
-});
 
 route.get('/event', function(req, res) {
   var eventName = uuid.v4();
@@ -67,4 +58,10 @@ route.post('/list', function(req, res) {
   });
 });
 
-http.createServer(route).listen(80);
+var file = new(static.Server)('./static/app');
+route.get(function(req, res) {
+  file.serve(req, res);
+});
+
+http.createServer(route).listen(port);
+
