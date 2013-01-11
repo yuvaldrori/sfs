@@ -143,29 +143,17 @@ function displayUploadProgress(el, event){
 		
   function preview(file,i)
   {
-	var el, img, progress, reader;
-	var usePrevRow   = (i % 3);
-	var	previewRowNum  = Math.floor(i/3);
+	var el, img, reader;
 	reader = new FileReader();
-	if(usePrevRow == 0 )
-	{
-		$("#previewTable").append('<tr id="previewRow'+previewRowNum+'"></tr>');
-	}
-	el = $(	'<td>'+
-				'<div class="thumbnail">' +
-						'<img class="img-rounded">' +
-					'<div class="caption">'+
-						'<p>' + file.name + '</p>'+
-						'<div class="progress progress-striped" visibility: hidden>'+
-							'<div class="bar" style="width: 0%;">'+
-							'</div>'+
-						'</div>'+
+	el = $('<div class="thumbnail">' +
+				   '<img>' +
+					 '<div class="caption">'+
+					   '<p>' + file.name + '</p>'+
 					'</div>'+
-				'</div>'+
-			'</td>');
-	$("#previewRow"+previewRowNum).append(el);
+				'</div>');
+	$("#grid").append(el);
 	
-	var img = $("img", el);
+	img = $("img", el);
 	reader.onload = function(e) {
 
 	  qrcode.decode(e.target.result);
@@ -180,7 +168,7 @@ function displayUploadProgress(el, event){
 	AWSFiles.Init();
 	
 	var file,elem;
-	$("#previewTable").children().remove();
+	$("#grid").children().remove();
 	for(var i=0; i < files.length ; i++)
 	{
 		file = files[i];
@@ -210,7 +198,6 @@ function sendForm(form,el,url)
 {
 	var xhr = new XMLHttpRequest();
 			
-	$(".progress", el).show();
 	xhr.upload.addEventListener("progress", (function(e) {
 	  return displayUploadProgress(el, e);
 	}), false);
@@ -219,8 +206,6 @@ function sendForm(form,el,url)
 		if(xhr.readyState == 4 )
 		{
 		  if (xhr.status === 204) {
-			$(".progress", el).removeClass("active").addClass("progress-success");
-			$(".progress", el).hide();
 			return $(".caption p", el).text("Upload complete! ").append($("<a href=\"" + url + "\">View on S3</a>"));
 		  } else {
 			return $(".caption p", el).text("Upload failed ?");
@@ -232,5 +217,4 @@ function sendForm(form,el,url)
 	xhr.open("POST", url, true);
 	xhr.send(form);
 }
-	
 	

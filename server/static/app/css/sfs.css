@@ -1,5 +1,39 @@
-#website
+body
 {
   text-align: center;
-  border-style: dashed;
 }
+.frame
+{
+  text-align: left;
+  display: inline-block;
+}
+#website
+{
+  text-align: left;
+  display: inline-block;
+  margin: 0 auto;
+}
+#menu>ul
+{
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+#menu>ul>li
+{
+  display:inline;
+}
+.thumbnail
+{
+  display: inline-block;
+  margin: 1px;
+}
+.thumbnail>img
+{
+  width: 90px;
+  height: 90px;
+}
+}
+

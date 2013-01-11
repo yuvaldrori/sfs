@@ -1,6 +1,5 @@
 $(document).ready(handleGenQR());
-$("#website").html('<h3>Goto:</h3> <h2>' + window.location.origin +
-    '/app/upload.html')
+$("#website").html('<h3>Goto:</h3><h2>' + window.location.origin + '</h2>')
 
 function createCORSRequest(method, url) {
   var xhr = new XMLHttpRequest();
@@ -43,8 +42,6 @@ function handleGenQR()
 					if(img != null)
 					{
 						$('#qr').append(img);
-            $("#qr").css('margin', '0 auto');
-            $("#qr").css('width', $("#qr>img").width());
 					}
   		  }
 			}
