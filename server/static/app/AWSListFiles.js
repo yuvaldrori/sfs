@@ -10,12 +10,13 @@ function addImageThumbnail(key,awsBucketName,perfix)
 	
 	var td = document.createElement('td');
 	var name = document.createElement('b');                       //removing the perfix from the file name
-	var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + key.replace(perfix,"");
-	alert(fileName);
+	var thumbURL = "https://" + awsBucketName + ".s3.amazonaws.com/" + key.replace(perfix,"");
+	var origURL  = "https://" + awsBucketName + ".s3.amazonaws.com/" + key;
+	alert(origURL);
 	var link = document.createElement('a');
 	var img = new Image(150,150);
-	link.href = url;
-	img.src = url;
+	link.href = origURL;
+	img.src = thumbURL;
 	img.class = "img-rounded";
 	img.onload = function() {
 		$('#downloadedPreview').append(td);
@@ -53,7 +54,7 @@ function getFilesList(decodedQR)
 	data["Prefix"] = folderName + '/';
 	data["Delimeter"] = "";
 
-	alert(JSON.stringify(data));
+	
     xhr.send(JSON.stringify(data));
     xhr.onloadend = function () {
       if(xhr.readyState == 4 )
