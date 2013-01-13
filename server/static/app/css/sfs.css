@@ -2,17 +2,6 @@ body
 {
   text-align: center;
 }
-.frame
-{
-  text-align: left;
-  display: inline-block;
-}
-#website
-{
-  text-align: left;
-  display: inline-block;
-  margin: 0 auto;
-}
 #menu>ul
 {
   float: left;
@@ -24,16 +13,5 @@ body
 #menu>ul>li
 {
   display:inline;
-}
-.thumbnail
-{
-  display: inline-block;
-  margin: 1px;
-}
-.thumbnail>img
-{
-  width: 90px;
-  height: 90px;
-}
 }
 
