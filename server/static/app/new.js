@@ -1,5 +1,5 @@
 $(document).ready(handleGenQR());
-$("#website").html('<h3>Goto:</h3><h2>' + window.location.origin + '</h2>')
+$("#website").html('<h2>Goto:<br>' + window.location.origin + '</h2>')
 
 function createCORSRequest(method, url) {
   var xhr = new XMLHttpRequest();
@@ -17,8 +17,7 @@ function createCORSRequest(method, url) {
   return xhr;
 }
 
-function handleGenQR()
-{
+function handleGenQR() {
 	var url = window.location.origin + '/event';
 	xhr = createCORSRequest('GET', url);
 
@@ -29,23 +28,20 @@ function handleGenQR()
   var qrCellSize = Math.floor(size / (qrTypeNumber * 4 + 25));
 
 	xhr.onload = function(e) {
-		if(xhr.readyState == 4 )
-		{
+		if(xhr.readyState == 4 ) {
 			if (xhr.status == 200) {
-				  var qr = genQRcode(qrTypeNumber,qrErrorCorrectionLevel);
-				  if(qr != null)
-				  {
-					qr.addData(xhr.responseText);
-					qr.make();
-					var img = qr.createImgTag(qrCellSize);
-
-					if(img != null)
-					{
-						$('#qr').append(img);
-					}
-  		  }
-			}
-		}
+        var qr = genQRcode(qrTypeNumber,qrErrorCorrectionLevel);
+        if(qr != null) {
+          qr.addData(xhr.responseText);
+          qr.make();
+          var img = qr.createImgTag(qrCellSize);
+          $("#encoded").text(xhr.responseText);
+          if(img != null) {
+            $('#qr').append(img);
+          }
+        }
+      }
+    }
 	};
 	xhr.send();
 }

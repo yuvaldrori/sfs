@@ -28,7 +28,6 @@ qrcode.callback = null;
 
 qrcode.decode = function(src){
 	
-	
 	if(arguments.length==0)
 	{
 		var canvas_qr = document.getElementById("qr-canvas");
@@ -43,7 +42,6 @@ qrcode.decode = function(src){
 	}
 	else
 	{
-		var processingRes = true;
 		var image = new Image();
 		image.onload=function(){
 			//var canvas_qr = document.getElementById("qr-canvas");
@@ -66,7 +64,7 @@ qrcode.decode = function(src){
 			}catch(e){
 				qrcode.result = "Cross domain image reading not supported in your browser! Save it to your computer then drag and drop the file!";
 				if(qrcode.callback!=null)
-					qrcode.callback(qrcode.result);
+					qrcode.callback(e, qrcode.result);
 				return;
 			}
 			
@@ -76,14 +74,13 @@ qrcode.decode = function(src){
             }
             catch(e)
             {
-				//console.log(e);
+				console.log(e);
                 qrcode.result = "error decoding QR Code";
-				processingRes = false;
+				qrcode.callback(e, qrcode.result);
+        return;
             }
-			if(qrcode.callback!=null && processingRes)
-			{
-				qrcode.callback(qrcode.result);
-			}
+			if(qrcode.callback!=null)
+				qrcode.callback(null, qrcode.result);
 		}
 		image.src = src;
 	}
