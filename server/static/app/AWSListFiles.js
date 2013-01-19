@@ -12,7 +12,7 @@ function addImageThumbnail(key,awsBucketName,perfix)
 	var name = document.createElement('b');                       //removing the perfix from the file name
 	var thumbURL = "https://" + awsBucketName + ".s3.amazonaws.com/" + key.replace(perfix,"");
 	var origURL  = "https://" + awsBucketName + ".s3.amazonaws.com/" + key;
-	alert(origURL);
+	
 	var link = document.createElement('a');
 	var img = new Image(150,150);
 	link.href = origURL;

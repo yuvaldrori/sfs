@@ -64,7 +64,7 @@ AWSFiles.upload = function()
 						var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
 						var dv = new DataView(barray);
 						var blob = new Blob([dv],{type:f.type}); 
-						alert("a " + f.name);
+						
 						var fd2 = new FormData();
 						fd2.append("key",folder + "/${filename}");
 						fd2.append("acl","public-read");
@@ -129,7 +129,9 @@ function displayUploadProgress(el, event){
 	var el, img, progress, reader;
 	var usePrevRow   = (i % 3);
 	var	previewRowNum  = Math.floor(i/3);
-	reader = new FileReader();
+	var url = window.URL || window.webkitURL;
+	
+	
 	if(usePrevRow == 0 )
 	{
 		$("#previewTable").append('<tr id="previewRow'+previewRowNum+'"></tr>');
@@ -149,12 +151,30 @@ function displayUploadProgress(el, event){
 	$("#previewRow"+previewRowNum).append(el);
 	
 	var img = $("img", el);
-	reader.onload = function(e) {
-
-	  qrcode.decode(e.target.result);
-	  img.attr('src', e.target.result);
-	};
-	reader.readAsDataURL(file);
+	var foundQR = AWSFiles.bucketName != null;
+	if(url)
+	{
+		var src = url.createObjectURL( file );
+		if(!foundQR)
+		{
+			qrcode.decode(src);
+		}
+		img.attr('src',src);
+	}
+	else
+	{
+		reader = new FileReader();
+		reader.onload = function(e) {
+			if(!foundQR)
+			{
+				qrcode.decode(e.target.result);
+			}
+		  
+		    img.attr('src', e.target.result);
+		    reader = null;
+		};
+		reader.readAsDataURL(file);
+	}
 	return el;
   }
   
@@ -163,7 +183,9 @@ function displayUploadProgress(el, event){
 	AWSFiles.Init();
 	
 	var file,elem;
+	var bDone = false;
 	$("#previewTable").children().remove();
+	
 	for(var i=0; i < files.length ; i++)
 	{
 		file = files[i];
