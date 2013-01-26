@@ -1,0 +1,15 @@
+@import url("sfs.css");
+
+.frame
+{
+  text-align: center;
+  display: inline-block;
+}
+
+#website
+{
+  text-align: left;
+  display: inline-block;
+  margin: 0 auto;
+}
+

@@ -1,0 +1,31 @@
+@import url("sfs.css");
+
+.frame
+{
+  text-align: center;
+  display: inline-block;
+  background-size: contain;
+  width: 80%;
+}
+
+#dnd, #main
+{
+  border-style: dashed;
+  border-color: gray;
+  padding: 2em;
+  height: 100%;
+}
+
+#input>h1,#input>h3
+{
+  word-wrap: break-word;
+}
+
+#testqr
+{
+  width: 100%;
+  border-style: solid;
+  border-color: gray;
+  border-width: thin;
+}
+
