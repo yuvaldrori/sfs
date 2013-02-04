@@ -8,14 +8,14 @@
   </head>
   <body>
     <div class="frame">
-      <div id="main">
-        hello world
+      <div id="list">
+        hello
       </div>
-      <div id="dnd">
+      <div id="upload">
         <div id="input">
-          <h1>Drag coded picture here</h1>
-          <h3>Or select it using this button:</h3>
-          <input type="file" id="testqr" onchange="decodeqr(this.files)">
+          <h1 id="uploadTitle">Drag coded picture here</h1>
+          <h3 id="uploadDetails">Or select it using this button:</h3>
+          <input type="file" id="fileInput" multiple>
           <p id="result"></p>
         </div>
       </div>
