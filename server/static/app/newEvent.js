@@ -19,21 +19,26 @@ function handleGenQR()
 	var url = window.location.origin + '/event';
 	xhr = createCORSRequest('GET', url);
 
+  var qrTypeNumber = 5;
+  var qrErrorCorrectionLevel = 'M';
+  var size = Math.min($(window).width(), $(window).height()) * 0.7;
+  // cell size calc taken from genqr code
+  var qrCellSize = Math.floor(size / (qrTypeNumber * 4 + 25));
+  
+
 	xhr.onload = function(e) {
 		if(xhr.readyState == 4 )
 		{
 			if (xhr.status == 200) {
-				  var qr = genQRcode(5,'M');
-				  if(qr != null)
-				  {
-					qr.addData(xhr.responseText);
-					qr.make();
-					var img = qr.createImgTag();
-
-					if(img != null)
-					{
-						$('#genQrBtn').append(img);
-					}
+        var qr = genQRcode(qrTypeNumber,qrErrorCorrectionLevel);
+        if(qr != null) {
+          qr.addData(xhr.responseText);
+          qr.make();
+          var img = qr.createImgTag(qrCellSize);
+          $("#encoded").text(xhr.responseText);
+          if(img != null) {
+            $('#genQrBtn').append(img);
+          }
   		  }
 			}
 		}
