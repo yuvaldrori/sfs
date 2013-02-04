@@ -21,7 +21,7 @@ function handleGenQR()
 
   var qrTypeNumber = 5;
   var qrErrorCorrectionLevel = 'M';
-  var size = Math.min($(window).width(), $(window).height()) * 0.7;
+  var size = Math.min($(window).width(), $(window).height()) * 0.5;
   // cell size calc taken from genqr code
   var qrCellSize = Math.floor(size / (qrTypeNumber * 4 + 25));
   
