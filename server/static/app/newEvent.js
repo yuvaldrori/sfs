@@ -38,7 +38,8 @@ function handleGenQR()
           $("#encoded").text(xhr.responseText);
           if(img != null) {
             $('#genQrBtn').append(img);
-            $('#genQrBtn>span').text('goto: ' + window.location.origin);
+            $('#genQrBtn>span').hide();
+            $('#generateQR').text('goto: ' + window.location.origin);
           }
   		  }
 			}
