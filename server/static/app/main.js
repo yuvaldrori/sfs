@@ -1,10 +1,14 @@
 $( document ).ready( function() {
-  $( ".page" ).hide();
-  $( "#welcome_page" ).show();
+  pageTurn($( "#welcome_page" ));
   $( "#gencode_button" ).click(function() {
     genQR();
   });
 });
+
+function pageTurn (page) {
+  $( ".page" ).hide();
+  $( page ).show();
+}
 
 function genQR() {
 	var url = window.location.origin + '/event';
@@ -23,8 +27,7 @@ function genQR() {
       if(img != null) {
         $( "#qr_code" ).append(img);
         $( "#website>p" ).text('goto: ' + window.location.origin);
-        $( ".page" ).hide();
-        $( "#new_event_page" ).show();
+        pageTurn($( "#new_event_page" ));
       }
     }
   });
