@@ -56,35 +56,39 @@ function decodeMagicPicture() {
               setSelect: [file.width * 0.25,
                           file.height * 0.25,
                           file.width * 0.75,
-                          file.height * 0.75],
-              onChange: function(c) {
-                cropBox = c;
-              }
+                          file.height * 0.75]
             },
             function() {
               jcrop_api = this;
             });
           });
-          //window.URL.revokeObjectURL(src);
         });
-        pageTurn($( "#crop_qr_page" ));
         $( "#bad_qr_image" ).attr('src', src);
+        pageTurn($( "#crop_qr_page" ));
         $( "#crop_button" ).click(function() {
           c = jcrop_api.tellSelect();
-          //var canvas = document.createElement( "canvas" );
-          $( "#target_canvas" ).width(c.w);
-          $( "#target_canvas" ).height(c.h);
-          var context = $( "#target_canvas" )[0].getContext('2d');
+          console.log(c);
+          var canvas = document.createElement('canvas');
+          canvas.width = c.w;
+          canvas.height = c.h;
+          var context = canvas.getContext('2d');
           context.drawImage($( "#bad_qr_image" )[0], c.x, c.y, c.w, c.h, 0, 0,
             c.w, c.h);
+          qrcode.callback = function(e, d) {
+            if (e) {
+              console.log(e);
+            } else {
+              console.log(d);
+            };
+          };
+          qrcode.decode(canvas.toDataURL());
         });
       } else {
-        window.URL.revokeObjectURL(src);
         console.log(d);
       };
     };
     qrcode.decode(src);
-  }
+  };
 }
 
 
