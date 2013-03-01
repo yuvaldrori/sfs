@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>Pick Up</title>
     <script src="lib/jquery.js"></script>
+    <script src="lib/jquery.Jcrop.min.js"></script>
+    <link rel="stylesheet" href="css/jquery.Jcrop.min.css" type="text/css" />
   </head>
   <body>
     <div id="screen">
@@ -41,9 +43,47 @@
         </div>
       </div>
 
+      <div class="page" id="decode_qr_page">
+        <p>
+          Please select the picture with the special code:
+        </p>
+        <input type="file" id="magic_picture">
+      </div>
+
+      <div class="page" id="crop_qr_page">
+        <div id="bad_qr">
+          <img id="bad_qr_image"></img>
+        </div>
+        <div class="button" id="crop_button">
+          <p>
+            crop
+          </p>
+        </div>
+        <canvas id="target_canvas"></canvas>
+      </div>
+
     </div>
     <script src="main.js"></script>
     <script src="lib/qrcode-gen.js"></script>
+    <script src="lib/jsqrcode/qrcode.js"></script>
+    <script src="lib/jsqrcode/grid.js"></script>
+    <script src="lib/jsqrcode/version.js"></script>
+    <script src="lib/jsqrcode/detector.js"></script>
+    <script src="lib/jsqrcode/formatinf.js"></script>
+    <script src="lib/jsqrcode/errorlevel.js"></script>
+    <script src="lib/jsqrcode/bitmat.js"></script>
+    <script src="lib/jsqrcode/datablock.js"></script>
+    <script src="lib/jsqrcode/bmparser.js"></script>
+    <script src="lib/jsqrcode/datamask.js"></script>
+    <script src="lib/jsqrcode/rsdecoder.js"></script>
+    <script src="lib/jsqrcode/gf256poly.js"></script>
+    <script src="lib/jsqrcode/gf256.js"></script>
+    <script src="lib/jsqrcode/decoder.js"></script>
+    <script src="lib/jsqrcode/qrcode.js"></script>
+    <script src="lib/jsqrcode/findpat.js"></script>
+    <script src="lib/jsqrcode/alignpat.js"></script>
+    <script src="lib/jsqrcode/databr.js"></script>
+    
   </body>
 </html>
 
