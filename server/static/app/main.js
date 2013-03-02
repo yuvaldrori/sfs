@@ -62,12 +62,13 @@ function decodeMagicPicture() {
               jcrop_api = this;
             });
           });
+          window.URL.revokeObjectURL(src);
         });
         $( "#bad_qr_image" ).attr('src', src);
+        $( "#bad_qr_manual" ).hide();
         pageTurn($( "#crop_qr_page" ));
         $( "#crop_button" ).click(function() {
           c = jcrop_api.tellSelect();
-          console.log(c);
           var canvas = document.createElement('canvas');
           canvas.width = c.w;
           canvas.height = c.h;
@@ -76,6 +77,16 @@ function decodeMagicPicture() {
             c.w, c.h);
           qrcode.callback = function(e, d) {
             if (e) {
+              $( "#submit_code_manualy" ).click(function() {
+                var re = /sfs_\w{8}-\w{4}-\w{4}-\w{4}-\w{12}:\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/;
+                if (re.test($( "#manual_code_input" ).val())) {
+                  console.log('OK');
+                } else {
+                  $( "#bad_qr_status>p" ).text('Bad manual code.');
+                };
+              });
+              $( "#bad_qr_manual" ).show();
+              $( "#bad_qr_status>p" ).text('Could not decode, please try again or manually enter the code.');
               console.log(e);
             } else {
               console.log(d);
