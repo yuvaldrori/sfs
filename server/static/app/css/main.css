@@ -1,0 +1,16 @@
+.page
+{
+  border-style: solid;
+  border-width: thin;
+  border-color: gray;
+  padding: 1em;
+}
+
+.button
+{
+  border-style: outset;
+  border-width: medium;
+  border-color: gray;
+  margin: 0.5em;
+  padding: 0.5em;
+}
