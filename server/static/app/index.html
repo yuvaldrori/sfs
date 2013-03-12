@@ -6,6 +6,7 @@
     <script src="lib/jquery.js"></script>
     <script src="lib/jquery.Jcrop.min.js"></script>
     <link rel="stylesheet" href="css/jquery.Jcrop.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/main.css" type="text/css" />
   </head>
   <body>
     <div id="screen">
@@ -87,6 +88,30 @@
 			</div>
         </div>
         <div id="download_pics">
+        </div>
+      </div>
+
+      <div class="page" id="manual_qr_page">
+        <div id="zoom_qr">
+          <img id="bad_qr_image"></img>
+        </div>
+        <div class="button" id="crop_button">
+          <p>
+            crop
+          </p>
+        </div>
+        <div id="bad_qr_status">
+          <p>
+            Could not decode, please help by picking the code area from the picture.
+          </p>
+        </div>
+        <div id="bad_qr_manual">
+          <input type="text" id="manual_code_input">
+          <div class="button" id="submit_code_manualy">
+            <p>
+              Submit code manually.
+            </p>
+          </div>
         </div>
       </div>
 
