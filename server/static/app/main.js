@@ -90,12 +90,14 @@ function decodeMagicPicture() {
               console.log(e);
             } else {
               console.log(d);
+              picturesInit(d);
             };
           };
           qrcode.decode(canvas.toDataURL());
         });
       } else {
         console.log(d);
+        picturesInit(d);
       };
     };
     qrcode.decode(src);

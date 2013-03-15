@@ -3,9 +3,9 @@
 /* Bind Functions */
 $('#files_uploader').bind('change', handleFileSelect);
 
-$('#upload_pics"').bind('dragenter', handleDragEnter);
-$('#upload_pics"').bind('dragover', handleDragOver);
-$('#upload_pics"').bind('drop', handleFileDrop);
+$('#upload_pics').bind('dragenter', handleDragEnter);
+$('#upload_pics').bind('dragover', handleDragOver);
+$('#upload_pics').bind('drop', handleFileDrop);
 
 $('#upload_button').bind('click', handleFileupload);
 
@@ -307,7 +307,7 @@ function getFilesList(decodedQR)
 	var folderName = decodedQR.split(":")[1];
 	
 	//TODO: replace this url!!
-	var url = "http://localhost:80/list";
+	var url = window.location.origin + '/list';
 	var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
@@ -339,7 +339,7 @@ function picturesInit(bucket)
  {
 	AWSFiles.Init(bucket);
 	AWSFiles.getPictures();
-	//show pics page
+  pageTurn($( "#pictures" ));
  }
   
 	
