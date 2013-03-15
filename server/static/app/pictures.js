@@ -199,7 +199,6 @@ function handleFiles(files) {
 
 function handleFileSelect(event) {
   var files = event.target.files;
-  qrcode.callback = QRcallback;
   handleFiles(files);
 }
 
