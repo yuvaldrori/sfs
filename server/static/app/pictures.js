@@ -1,9 +1,7 @@
 
 
 /* Bind Functions */
-
 $('#files_uploader').bind('change', handleFileSelect);
-$('#downloadFiles').bind('change', handleDownloadFiles);
 
 $('#upload_pics"').bind('dragenter', handleDragEnter);
 $('#upload_pics"').bind('dragover', handleDragOver);
@@ -15,16 +13,23 @@ $('#upload_button').bind('click', handleFileupload);
 
 /* AWS Files Struct*/
 AWSFiles = {};
-AWSFiles.files = [];
+AWSFiles.filesToUpload = [];
+AWSFiles.filesToDownload = [];
+AWSFiles.filesToDownloadIndex = 0;
 AWSFiles.bucketName = null;
 AWSFiles.upload = function()
 {
-	 for(var i =  0; i < AWSFiles.files.length ; i++)
+	 for(var i =  0; i < AWSFiles.filesToUpload.length ; i++)
 	 {
-		var file = AWSFiles.files[i].file;
-		var el = AWSFiles.files[i].elem;
+		var file = AWSFiles.filesToUpload[i].file;
+		var el = AWSFiles.filesToUpload[i].elem;
+		
+		if(!AWSFiles.filesToUpload[i].upload)
+		{
+			continue;
+		}
 
-		if (file.size > (3 * 1024 * 1024)) 
+		if (file.size > (5 * 1024 * 1024)) //5MB
 		{
 		  return $(".caption p", el).text("Sorry, file's too big!");
 		} 
@@ -67,17 +72,19 @@ AWSFiles.upload = function()
 				}
 			}
 	  
-			sendForm(fd,AWSFiles.files[i].elem,url);
+			sendForm(fd,AWSFiles.filesToUpload[i].elem,url);
 		}
 	  }
 }
 
 
 
-AWSFiles.Init = function()
+AWSFiles.Init = function(bucket)
 {
-	AWSFiles.files = [];
-	AWSFiles.bucketName = null;
+	AWSFiles.filesToUpload = [];
+	AWSFiles.filesToDownload = [];
+	AWSFiles.bucketName = bucket;
+	AWSFiles.filesToDownloadIndex = 0;
 }
 
 AWSFiles.readyToUpload = function()
@@ -85,16 +92,20 @@ AWSFiles.readyToUpload = function()
 	return AWSFiles.bucketName != null;
 }
 
-AWSFiles.addFile = function(f,elem){
+AWSFiles.addFileToUpload = function(f,elem){
 
 	var awsFile = new AWSFile(f,elem,true);
-	this.files.push(awsFile);
+	this.filesToUpload.push(awsFile);
 	
 	//cancel pic function
 	$(elem).bind('click', function(el,aFile){
 		$(el).remove();
 		aFile.upload = false;
 	}(elem,awsFile)); 
+}
+
+AWSFiles.addFileToDownload = function(elem){
+	this.filesToDownload.push(elem);
 }
 
 
@@ -122,14 +133,14 @@ function displayUploadProgress(el, event){
   }
 		
 		
-  function createPicPlaceHolder(file)
+  function createPicPlaceHolder(fileName,fileSize)
   {
 	var el = $('<div class="pic_place_holder">' +
 				'<div class="title">'+
-					'<p>' + file.name +'('+file.size+' kb )'+ '</p>'+
+					'<p>' + fileName +'('+fileSize+' kb )'+ '</p>'+
 				'</div>'+
 			'</div>');
-	$('#previewImages').append(el);
+	
 	return el;
   }
   
@@ -184,7 +195,7 @@ function handleFiles(files)
 	AWSFiles.Init();
 	
 	var file,elem;
-	$("#previewImages").children().remove();
+	$("#previewUploadImages").children().remove();
 	for(var i=0; i < files.length ; i++)
 	{
 		file = files[i];
@@ -192,13 +203,14 @@ function handleFiles(files)
 			continue;
 		}
 		
-		elem = createPicPlaceHolder(file);
-		AWSFiles.addFile(file,elem);
+		elem = createPicPlaceHolder(file.name,file.size);
+		$('#previewUploadImages').append(elem);
+		AWSFiles.addFileToUpload(file,elem);
 	}
 	
-	for(var i=0; i < AWSFiles.files.length ; i++)
+	for(var i=0; i < AWSFiles.filesToUpload.length ; i++)
 	{
-		preview(AWSFiles.files[i]);
+		preview(AWSFiles.filesToUpload[i]);
 	}
 }
 	  
@@ -250,7 +262,7 @@ function sendForm(form,el,url)
 
 function addImageThumbnail(fileName,awsBucketName)
 {
-	var td = document.createElement('td');
+	var div = document.createElement('div');
 	var name = document.createElement('b');
 	var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
 	var link = document.createElement('a');
@@ -259,12 +271,12 @@ function addImageThumbnail(fileName,awsBucketName)
 	img.src = url;
 	img.class = "img-rounded";
 	img.onload = function() {
-		$('#downloadedPreview').append(td);
+		AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++].append(div);
 	}
 	name.innerHTML = fileName.split("/")[1];
 	link.appendChild(img);
-	td.appendChild(link);
-	td.appendChild(name);
+	div.appendChild(link);
+	div.appendChild(name);
 	
 }
 
@@ -272,8 +284,17 @@ function downloadFiles(JSONresponse)
 {
 	
 	var listObjects = JSON.parse(JSONresponse);
+	$("#previewDownloadImages").children().remove();
 	if(listObjects.Contents && listObjects.Name)
 	{
+		$(listObjects.Contents).each(function() {  
+			var fileName = this.Key;
+			elem = createPicPlaceHolder(fileName,"");
+			$('#previewDownloadImages').append(elem);
+			AWSFiles.addFileToDownload(elem);
+		
+		});
+		
 		$(listObjects.Contents).each(function() {  
 			var fileName = this.Key;
 			addImageThumbnail(fileName,listObjects.Name);
@@ -307,20 +328,19 @@ function getFilesList(decodedQR)
 						
     };
 }
-
- function handleDownloadFiles(e)
-  {
-	var file = event.target.files[0];
-	qrcode.callback = getFilesList;
-	if (!file.type.match('image.*')) {
-		alert(file.name + ' is not an image!');
-	}
-	var reader = new FileReader();
-	reader.onload = function(e) {
-	  qrcode.decode(e.target.result);
-	};
-	reader.readAsDataURL(file);
-  }
+  
+ AWSFiles.getPictures = function()
+ {
+	getFilesList(AWSFiles.bucketName);
+ }
+ 
+ 
+function picturesInit(bucket)
+ {
+	AWSFiles.Init(bucket);
+	AWSFiles.getPictures();
+	//show pics page
+ }
   
 	
 	
