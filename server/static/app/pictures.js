@@ -122,25 +122,34 @@ function resizeImage(img,ratio,type) {
 
 
 function createPicPlaceHolder(fileName,fileSize) {
-  var el = $('<div class="pic_place_holder">' +
-      '<div class="title">'+
-      '<p>' + fileName +'('+fileSize+' kb )'+ '</p>'+
-    '</div>'+
-    '</div>');
-
+  var el = '<div class="pic_place_holder">' +
+			   '<div class="title">'+
+				   '<p>' + fileName +'('+fileSize+' kb )'+ '</p>'+
+			   '</div>'+
+		   '</div>';
+  /*var el = document.createElement('div');
+  var div = document.createElement('div');
+  var p = document.createElement('p');
+  var picTitle = fileName +'('+fileSize+' kb )';
+  el.setAttribute('class', 'pic_place_holder');
+  div.setAttribute('class', 'title');
+  el.appendChild(div);
+  div.appendChild(p);
+  p.innerHTML = picTitle;*/
   return el;
 }
 
 function preview(f) {
   var el, img, progress, reader;
 
+  reader = new FileReader();
   el = $('<div class="thumbnail">' +
       '<img class="img-rounded"/>' +
       '<div class="caption">'+
       '<div class="progress" visibility: hidden/>'+
       '<div/>'+
       '</div>');
-  $(f.elem).append(el);
+  $(".pic_place_holder", f.elem).append(el);
 
   var img = $("img", el);
   reader.onload = function(e) {
@@ -179,16 +188,16 @@ function AWSFile (file,elem,upload) {
 function handleFiles(files) {
   AWSFiles.Init();
 
-  var file,elem;
+  
   $("#previewUploadImages").children().remove();
   for(var i=0; i < files.length ; i++) {
-    file = files[i];
+    var file = files[i];
     if (!file.type.match('image.*')) {
       continue;
     }
 
-    elem = createPicPlaceHolder(file.name,file.size);
-    $('#previewUploadImages').append(elem);
+    var elem = createPicPlaceHolder(file.name,file.size);
+	$('#previewUploadImages').append(elem);
     AWSFiles.addFileToUpload(file,elem);
   }
 
@@ -289,6 +298,7 @@ function getFilesList(decodedQR) {
   data["Prefix"] = folderName + '/';
   data["Delimeter"] = "";
 
+  alert("bucketName: " + bucketName +" folderName: " +folderName +" url:" + url);
   xhr.send(JSON.stringify(data));
   xhr.onloadend = function () {
     if(xhr.readyState == 4 ) {
