@@ -1,13 +1,10 @@
 
 /* Bind Functions */
 $('#files_uploader').bind('change', handleFileSelect);
-
 $('#upload_pics').bind('dragenter', handleDragEnter);
 $('#upload_pics').bind('dragover', handleDragOver);
 $('#upload_pics').bind('drop', handleFileDrop);
-
 $('#upload_button').bind('click', handleFileupload);
-
 /**************************************************/
 
 /* AWS Files Struct*/
@@ -41,30 +38,24 @@ AWSFiles.upload = function() {
       var img = new Image();
       img.src = $("img",el).attr('src');
       img.onload = function() {
-        alert('entered');
         var minImageData =  resizeImage(img,0.5,file.type);
-
         //decode the base64 binary into am ArrayBuffer 
         var separator = 'base64,';  
         var index = minImageData.indexOf(separator);  
         if (index != -1) {  
-
           var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
           var dv = new DataView(barray);
           var blob = new Blob([dv],{type:file.type}); 
-
           var fd2 = new FormData();
           fd2.append("key",folderName + "/${filename}");
           fd2.append("acl","public-read");
           fd2.append("Content-Type",file.type);
           fd2.append('file', blob, "thumb_"+file.name);
-
           var xhr = new XMLHttpRequest();
           xhr.open("POST", url, true);
           xhr.send(fd2);
         }
       }
-
       sendForm(fd,AWSFiles.filesToUpload[i].elem,url);
     }
   }
@@ -81,13 +72,11 @@ AWSFiles.readyToUpload = function() {
   return AWSFiles.bucketName != null;
 }
 
-AWSFiles.addFileToUpload = function(f,elem) {
-
-  var awsFile = new AWSFile(f,elem,true);
+AWSFiles.addFileToUpload = function(f, elem) {
+  var awsFile = new AWSFile(f, elem, true);
   this.filesToUpload.push(awsFile);
-
   //cancel pic function
-  $(elem).bind('click', function(el,aFile) {
+  $(elem).bind('click', function(el, aFile) {
     $(el).remove();
     aFile.upload = false;
   }(elem,awsFile)); 
@@ -96,7 +85,6 @@ AWSFiles.addFileToUpload = function(f,elem) {
 AWSFiles.addFileToDownload = function(elem){
   this.filesToDownload.push(elem);
 }
-
 
 function displayUploadProgress(el, event) {
   var percent;
@@ -110,7 +98,6 @@ function displayUploadProgress(el, event) {
   }
 };
 
-
 function resizeImage(img,ratio,type) {
   var canvas = document.createElement('canvas');
   var context = canvas.getContext('2d');
@@ -120,13 +107,12 @@ function resizeImage(img,ratio,type) {
   return canvas.toDataURL(type);
 }
 
-
-function createPicPlaceHolder(fileName,fileSize) {
-  var el = '<div class="pic_place_holder">' +
-			   '<div class="title">'+
-				   '<p>' + fileName +'('+fileSize+' kb )'+ '</p>'+
-			   '</div>'+
-		   '</div>';
+function createPicPlaceHolder(fileName, fileSize) {
+  var el = $( '<div class="pic_place_holder">' +
+                '<div class="title">' +
+                  '<p>' + fileName + '(' + fileSize + ' kb )' + '</p>' +
+                '</div>' +
+              '</div>' );
   /*var el = document.createElement('div');
   var div = document.createElement('div');
   var p = document.createElement('p');
@@ -140,25 +126,21 @@ function createPicPlaceHolder(fileName,fileSize) {
 }
 
 function preview(f) {
-  var el, img, progress, reader;
-
-  reader = new FileReader();
-  el = $('<div class="thumbnail">' +
-      '<img class="img-rounded"/>' +
-      '<div class="caption">'+
-      '<div class="progress" visibility: hidden/>'+
-      '<div/>'+
-      '</div>');
-  $(".pic_place_holder", f.elem).append(el);
-
-  var img = $("img", el);
-  reader.onload = function(e) {
-    img.attr('src', e.target.result);
-  };
-  reader.readAsDataURL(f.file);
+  var el, img, progress;
+  el = $( '<div class="thumbnail">' +
+           '<img class="img-rounded"/>' +
+           '<div class="caption">' +
+             '<div class="progress" visibility: hidden/>' +
+           '<div/>' +
+         '</div>' );
+  var img = $( "img", el );
+  $( ".pic_place_holder", f.elem ).append(el);
+  var src = window.URL.createObjectURL(f.file);
+  img.load(function() {
+    window.URL.revokeObjectURL(img.attr('src'));
+  });
+  img.attr('src', src);
 }
-
-
 
 function handleDragEnter(e) {
   e.stopPropagation();
@@ -179,7 +161,7 @@ function handleFileDrop(e) {
   handleFiles(files);
 }
 
-function AWSFile (file,elem,upload) {
+function AWSFile(file ,elem ,upload) {
   this.file = file;
   this.elem = elem;
   this.upload = upload;
@@ -187,21 +169,17 @@ function AWSFile (file,elem,upload) {
 
 function handleFiles(files) {
   AWSFiles.Init();
-
-  
   $("#previewUploadImages").children().remove();
-  for(var i=0; i < files.length ; i++) {
+  for(var i = 0; i < files.length ; i++) {
     var file = files[i];
     if (!file.type.match('image.*')) {
       continue;
     }
-
-    var elem = createPicPlaceHolder(file.name,file.size);
-	$('#previewUploadImages').append(elem);
-    AWSFiles.addFileToUpload(file,elem);
+    var elem = createPicPlaceHolder(file.name, file.size);
+    $('#previewUploadImages').append(elem);
+    AWSFiles.addFileToUpload(file, elem);
   }
-
-  for(var i=0; i < AWSFiles.filesToUpload.length ; i++) {
+  for(var i = 0; i < AWSFiles.filesToUpload.length ; i++) {
     preview(AWSFiles.filesToUpload[i]);
   }
 }
@@ -272,14 +250,14 @@ function downloadFiles(JSONresponse) {
   if(listObjects.Contents && listObjects.Name) {
     $(listObjects.Contents).each(function() {  
       var fileName = this.Key;
-      elem = createPicPlaceHolder(fileName,"");
+      elem = createPicPlaceHolder(fileName, "");
       $('#previewDownloadImages').append(elem);
       AWSFiles.addFileToDownload(elem);
     });
 
     $(listObjects.Contents).each(function() {  
       var fileName = this.Key;
-      addImageThumbnail(fileName,listObjects.Name);
+      addImageThumbnail(fileName ,listObjects.Name);
     });
   }
 }
@@ -297,8 +275,6 @@ function getFilesList(decodedQR) {
   var data = {};
   data["Prefix"] = folderName + '/';
   data["Delimeter"] = "";
-
-  alert("bucketName: " + bucketName +" folderName: " +folderName +" url:" + url);
   xhr.send(JSON.stringify(data));
   xhr.onloadend = function () {
     if(xhr.readyState == 4 ) {
