@@ -76,10 +76,12 @@ AWSFiles.addFileToUpload = function(f, elem) {
   var awsFile = new AWSFile(f, elem, true);
   this.filesToUpload.push(awsFile);
   //cancel pic function
+  /*
   $(elem).bind('click', function(el, aFile) {
     $(el).remove();
     aFile.upload = false;
   }(elem,awsFile)); 
+  */
 }
 
 AWSFiles.addFileToDownload = function(elem){
@@ -108,11 +110,12 @@ function resizeImage(img,ratio,type) {
 }
 
 function createPicPlaceHolder(fileName, fileSize) {
-  var el = $( '<div class="pic_place_holder">' +
-                '<div class="title">' +
-                  '<p>' + fileName + '(' + fileSize + ' kb )' + '</p>' +
-                '</div>' +
-              '</div>' );
+  var mbsize = (fileSize / 1024 / 1024).toFixed(2);
+  var el = $('<div class="pic_place_holder">' +
+               '<div class="title">' +
+                 '<p>' + fileName + ' (' + mbsize + ' mb )' + '</p>' +
+               '</div>' +
+             '</div>');
   /*var el = document.createElement('div');
   var div = document.createElement('div');
   var p = document.createElement('p');
@@ -128,13 +131,14 @@ function createPicPlaceHolder(fileName, fileSize) {
 function preview(f) {
   var el, img, progress;
   el = $( '<div class="thumbnail">' +
-           '<img class="img-rounded"/>' +
+           '<img class="thumb"/>' +
            '<div class="caption">' +
              '<div class="progress" visibility: hidden/>' +
            '<div/>' +
          '</div>' );
   var img = $( "img", el );
-  $( ".pic_place_holder", f.elem ).append(el);
+  //$( ".pic_place_holder", f.elem ).append(el);
+  $( ".title", f.elem ).after(el);
   var src = window.URL.createObjectURL(f.file);
   img.load(function() {
     window.URL.revokeObjectURL(img.attr('src'));
@@ -176,7 +180,7 @@ function handleFiles(files) {
       continue;
     }
     var elem = createPicPlaceHolder(file.name, file.size);
-    $('#previewUploadImages').append(elem);
+    $( "#previewUploadImages" ).append(elem);
     AWSFiles.addFileToUpload(file, elem);
   }
   for(var i = 0; i < AWSFiles.filesToUpload.length ; i++) {
