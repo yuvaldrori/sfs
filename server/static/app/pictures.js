@@ -65,6 +65,7 @@ AWSFiles.Init = function(bucket) {
   AWSFiles.filesToUpload = [];
   AWSFiles.filesToDownload = [];
   AWSFiles.bucketName = bucket;
+  alert(bucket + '==' + this.bucket);
   AWSFiles.filesToDownloadIndex = 0;
 }
 
@@ -76,12 +77,12 @@ AWSFiles.addFileToUpload = function(f, elem) {
   var awsFile = new AWSFile(f, elem, true);
   this.filesToUpload.push(awsFile);
   //cancel pic function
-  /*
-  $(elem).bind('click', function(el, aFile) {
-    $(el).remove();
-    aFile.upload = false;
-  }(elem,awsFile)); 
-  */
+  
+  $(elem).bind('click', function() {
+    $(elem).remove();
+    awsFile.upload = false;
+  }); 
+  
 }
 
 AWSFiles.addFileToDownload = function(elem){
@@ -116,15 +117,6 @@ function createPicPlaceHolder(fileName, fileSize) {
                  '<p>' + fileName + ' (' + mbsize + ' mb )' + '</p>' +
                '</div>' +
              '</div>');
-  /*var el = document.createElement('div');
-  var div = document.createElement('div');
-  var p = document.createElement('p');
-  var picTitle = fileName +'('+fileSize+' kb )';
-  el.setAttribute('class', 'pic_place_holder');
-  div.setAttribute('class', 'title');
-  el.appendChild(div);
-  div.appendChild(p);
-  p.innerHTML = picTitle;*/
   return el;
 }
 
@@ -138,7 +130,7 @@ function preview(f) {
          '</div>' );
   var img = $( "img", el );
   //$( ".pic_place_holder", f.elem ).append(el);
-  $( ".title", f.elem ).after(el);
+  $( ".title", f.elem ).before(el);
   var src = window.URL.createObjectURL(f.file);
   img.load(function() {
     window.URL.revokeObjectURL(img.attr('src'));
