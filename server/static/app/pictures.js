@@ -64,7 +64,6 @@ AWSFiles.Init = function(bucket) {
   AWSFiles.filesToUpload = [];
   AWSFiles.filesToDownload = [];
   AWSFiles.bucketName = bucket;
-  alert(bucket + '==' + this.bucket);
   AWSFiles.filesToDownloadIndex = 0;
 }
 
@@ -76,12 +75,10 @@ AWSFiles.addFileToUpload = function(f, elem) {
   var awsFile = new AWSFile(f, elem, true);
   this.filesToUpload.push(awsFile);
   //cancel pic function
-  
   $(elem).bind('click', function() {
     $(elem).remove();
     awsFile.upload = false;
   }); 
-  
 }
 
 AWSFiles.addFileToDownload = function(elem){
@@ -110,11 +107,7 @@ function resizeImage(img,ratio,type) {
 }
 
 function createPicPlaceHolder(fileName, fileSize) {
-  var mbsize = (fileSize / 1024 / 1024).toFixed(2);
   var el = $('<div class="pic_place_holder">' +
-               '<div class="title">' +
-                 '<p>' + fileName + ' (' + mbsize + ' mb )' + '</p>' +
-               '</div>' +
              '</div>');
   return el;
 }
@@ -128,12 +121,8 @@ function preview(f) {
            '<div/>' +
          '</div>' );
   var img = $( "img", el );
-  //$( ".pic_place_holder", f.elem ).append(el);
-  $( ".title", f.elem ).before(el);
+  $( f.elem ).append(el);
   var src = window.URL.createObjectURL(f.file);
-  img.load(function() {
-    window.URL.revokeObjectURL(img.attr('src'));
-  });
   img.attr('src', src);
 }
 
@@ -188,7 +177,7 @@ function handleFileupload() {
 }
 
 
-function sendForm(form,el,url) {
+function sendForm(form ,el ,url) {
   var xhr = new XMLHttpRequest();
 
   $(".progress", el).show();
@@ -219,12 +208,12 @@ function sendForm(form,el,url) {
 
 /************************************ Download Functions ****************************************************/
 
-function addImageThumbnail(fileName,awsBucketName) {
+function addImageThumbnail(fileName, awsBucketName) {
   var div = document.createElement('div');
   var name = document.createElement('b');
   var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
   var link = document.createElement('a');
-  var img = new Image(150,150);
+  var img = new Image(140, 140);
   link.href = url;
   img.src = url;
   img.class = "img-rounded";
