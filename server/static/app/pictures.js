@@ -1,4 +1,3 @@
-
 /* Bind Functions */
 $('#files_uploader').bind('change', handleFileSelect);
 $('#upload_pics').bind('dragenter', handleDragEnter);
@@ -163,8 +162,7 @@ function AWSFile(file ,elem ,upload) {
   this.upload = upload;
 }
 
-function handleFiles(files) {
-  AWSFiles.Init();
+function handleFiles(files) {  
   $("#previewUploadImages").children().remove();
   for(var i = 0; i < files.length ; i++) {
     var file = files[i];
