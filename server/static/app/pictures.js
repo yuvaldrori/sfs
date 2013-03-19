@@ -114,7 +114,7 @@ function createPicPlaceHolder(fileName, fileSize) {
 
 function preview(f) {
   var el, img, progress;
-  el = $( '<div class="thumbnail">' +
+  el = $( '<div class="thumbnail_empty">' +
            '<img class="thumb"/>' +
            '<div class="caption">' +
 		     '<p/>' +
@@ -124,6 +124,9 @@ function preview(f) {
   var img = $( "img", el );
   $( f.elem ).append(el);
   var src = window.URL.createObjectURL(f.file);
+  img.load(function() {
+    el.attr('class', 'thumbnail');
+  });
   img.attr('src', src);
 }
 

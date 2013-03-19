@@ -75,9 +75,18 @@
   padding: 0.5em;
 }
 
-.thumbnail
+.thumbnail_empty
 {
   border-style: solid;
+  border-width: thin;
+  border-color: gray;
+  margin: 1em;
+  width: 140px;
+  height: 140px;
+}
+
+.thumbnail
+{
   border-width: thin;
   border-color: gray;
   margin: 1em;
