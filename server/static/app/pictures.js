@@ -257,7 +257,6 @@ function getFilesList(decodedQR) {
   // send the collected data as JSON
   var data = {};
   data["Prefix"] = folderName + '/';
-  data["Delimeter"] = "";
   xhr.send(JSON.stringify(data));
   xhr.onloadend = function () {
     if(xhr.readyState == 4 ) {
