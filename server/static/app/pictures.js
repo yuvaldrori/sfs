@@ -117,6 +117,7 @@ function preview(f) {
   el = $( '<div class="thumbnail">' +
            '<img class="thumb"/>' +
            '<div class="caption">' +
+		     '<p/>' +
              '<div class="progress" visibility: hidden/>' +
            '<div/>' +
          '</div>' );
@@ -190,7 +191,7 @@ function sendForm(form ,el ,url) {
       if (xhr.status === 204) {
         $(".progress", el).removeClass("active").addClass("progress-success");
         $(".progress", el).hide();
-        return $(".caption p", el).text("Upload complete! ").append($("<a href=\"" + url + "\">View on S3</a>"));
+        return $(".caption p", el).text("Upload complete! ");
       } else {
         return $(".caption p", el).text("Upload failed ?");
       }
