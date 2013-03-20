@@ -113,8 +113,8 @@ function resizeImage(img,ratio,type) {
   return canvas.toDataURL(type);
 }
 
-function createPicPlaceHolder(fileName, fileSize) {
-  var el = $('<div class="pic_place_holder">' +
+function createPicPlaceHolder() {
+  var el = $('<div class="pic_place_holder_empty">' +
              '</div>');
   return el;
 }
@@ -132,7 +132,7 @@ function preview(f) {
   $( f.elem ).append(el);
   var src = window.URL.createObjectURL(f.file);
   img.load(function() {
-    el.attr('class', 'thumbnail');
+    f.elem.attr('class', 'pic_place_holder');
   });
   img.attr('src', src);
 }
@@ -169,7 +169,7 @@ function handleFiles(files) {
     if (!file.type.match('image.*')) {
       continue;
     }
-    var elem = createPicPlaceHolder(file.name, file.size);
+    var elem = createPicPlaceHolder();
     $( "#previewUploadImages" ).append(elem);
     AWSFiles.addFileToUpload(file, elem);
   }
@@ -221,20 +221,19 @@ function sendForm(form ,el ,url) {
 
 function addImageThumbnail(fileName, awsBucketName) {
   var div = document.createElement('div');
-  var name = document.createElement('b');
   var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
   var link = document.createElement('a');
   var img = new Image(140, 140);
   link.href = url;
   img.src = url;
-  img.class = "img-rounded";
+  img.class = "thumb";
   img.onload = function() {
-    AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++].append(div);
+    var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
+    e.append(div);
+    $( e ).attr('class', 'pic_place_holder');
   }
-  name.innerHTML = fileName.split("/")[1];
   link.appendChild(img);
   div.appendChild(link);
-  div.appendChild(name);
 }
 
 function downloadFiles(JSONresponse) {
@@ -244,7 +243,7 @@ function downloadFiles(JSONresponse) {
   if(listObjects.Contents && listObjects.Name) {
     $(listObjects.Contents).each(function() {  
       var fileName = this.Key;
-      elem = createPicPlaceHolder(fileName, "");
+      elem = createPicPlaceHolder();
       $('#previewDownloadImages').append(elem);
       AWSFiles.addFileToDownload(elem);
     });

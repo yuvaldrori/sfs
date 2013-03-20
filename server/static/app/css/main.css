@@ -75,7 +75,7 @@
   padding: 0.5em;
 }
 
-.thumbnail_empty
+.pic_place_holder_empty
 {
   border-style: solid;
   border-width: thin;
@@ -85,10 +85,8 @@
   height: 140px;
 }
 
-.thumbnail
+.pic_place_holder
 {
-  border-width: thin;
-  border-color: gray;
   margin: 1em;
   width: 140px;
   height: 140px;
