@@ -220,20 +220,18 @@ function sendForm(form ,el ,url) {
 /************************************ Download Functions ****************************************************/
 
 function addImageThumbnail(fileName, awsBucketName) {
-  var div = document.createElement('div');
   var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
   var link = document.createElement('a');
-  var img = new Image(140, 140);
+  var img = new Image();
   link.href = url;
   img.src = url;
-  img.class = "thumb";
+  img.className = "thumb";
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
-    e.append(div);
+    e.append(link);
     $( e ).attr('class', 'pic_place_holder');
   }
   link.appendChild(img);
-  div.appendChild(link);
 }
 
 function downloadFiles(JSONresponse) {
