@@ -34,30 +34,37 @@ AWSFiles.upload = function() {
       fd.append("Content-Type",file.type);
       fd.append('file', file);
 
-      var img = new Image();
-      img.src = $("img",el).attr('src');
-      img.onload = function() {
-        var minImageData =  resizeImage(img,0.5,file.type);
-        //decode the base64 binary into am ArrayBuffer 
-        var separator = 'base64,';  
-        var index = minImageData.indexOf(separator);  
-        if (index != -1) {  
-          var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
-          var dv = new DataView(barray);
-          var blob = new Blob([dv],{type:file.type}); 
-          var fd2 = new FormData();
-          fd2.append("key",folderName + "/${filename}");
-          fd2.append("acl","public-read");
-          fd2.append("Content-Type",file.type);
-          fd2.append('file', blob, "thumb_"+file.name);
-          var xhr = new XMLHttpRequest();
-          xhr.open("POST", url, true);
-          xhr.send(fd2);
-        }
+      var image = new Image();
+      image.src = $("img",el).attr('src');
+	  
+	  (function(f,img) {
+	  
+		img.onload = function() {
+			var minImageData =  resizeImage(img,0.5,f.type);
+			//decode the base64 binary into am ArrayBuffer 
+			var separator = 'base64,';  
+			var index = minImageData.indexOf(separator);
+			
+			if (index != -1) {  
+			  var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
+			  var dv = new DataView(barray);
+			  var blob = new Blob([dv],{type:f.type}); 
+			  var fd2 = new FormData();
+			  fd2.append("key",folderName + "/${filename}");
+			  fd2.append("acl","public-read");
+			  fd2.append("Content-Type",f.type);
+			  fd2.append('file', blob, "thumb_"+f.name);
+			  var xhr = new XMLHttpRequest();
+			  xhr.open("POST", url, true);
+			  xhr.send(fd2);
+			}
+		  }
+	  })(file,image);
+  
+      
       }
       sendForm(fd,AWSFiles.filesToUpload[i].elem,url);
     }
-  }
 }
 
 AWSFiles.Init = function(bucket) {
