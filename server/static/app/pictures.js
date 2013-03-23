@@ -220,11 +220,13 @@ function sendForm(form ,el ,url) {
 /************************************ Download Functions ****************************************************/
 
 function addImageThumbnail(fileName, awsBucketName) {
-  var url = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+  var thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+  var fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" +
+    fileName.replace('thumb_', '');
   var link = document.createElement('a');
   var img = new Image();
-  link.href = url;
-  img.src = url;
+  link.href = fullurl;
+  img.src = thumburl;
   img.className = "thumb";
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
@@ -264,7 +266,7 @@ function getFilesList(decodedQR) {
 
   // send the collected data as JSON
   var data = {};
-  data["Prefix"] = folderName + '/';
+  data["Prefix"] = folderName + '/thumb_';
   xhr.send(JSON.stringify(data));
   xhr.onloadend = function () {
     if(xhr.readyState == 4 ) {

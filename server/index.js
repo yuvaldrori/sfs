@@ -38,7 +38,7 @@ route.post('/list', function(req, res) {
       return;
     }
     if (params.Prefix === undefined || params.Prefix === ''||
-        params.Prefix.charAt(params.Prefix.length - 1) !== '/') {
+        params.Prefix.indexOf('/') == -1) {
       res.writeHead(400);
       res.end('will not list');
       return;
