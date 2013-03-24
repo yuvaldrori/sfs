@@ -115,6 +115,11 @@ function resizeImage(img,ratio,type) {
 
 function createPicPlaceHolder() {
   var el = $('<div class="pic_place_holder_empty">' +
+               '<div class="caption">' +
+                 '<p></p>' +
+                 '<div class="progress" visibility: hidden>' +
+                 '</div>' +
+               '<div/>' +
              '</div>');
   return el;
 }
@@ -122,17 +127,39 @@ function createPicPlaceHolder() {
 function preview(f) {
   var el, img, progress;
   el = $( '<div class="thumbnail_empty">' +
-           '<img class="thumb"/>' +
-           '<div class="caption">' +
-		     '<p/>' +
-             '<div class="progress" visibility: hidden/>' +
-           '<div/>' +
-         '</div>' );
+            '<img class="thumb"/>' +
+          '</div>' );
   var img = $( "img", el );
-  $( f.elem ).append(el);
+  $( f.elem ).prepend(el);
   var src = window.URL.createObjectURL(f.file);
   img.load(function() {
     f.elem.attr('class', 'pic_place_holder');
+    img.exifLoad(function() {
+      f.exif = img.exifAll();
+      switch(f.exif[0].Orientation) {
+        case 2:
+          el.css('transform', 'scaleX(-1)');
+          break;
+        case 3:
+          el.css('transform', 'rotate(180deg)');
+          break;
+        case 4:
+          el.css('transform', 'scaleY(-1)');
+          break;
+        case 5:
+          el.css('transform', 'rotate(90deg) scaleY(-1)');
+          break;
+        case 6:
+          el.css('transform', 'rotate(90deg)');
+          break;
+        case 7:
+          el.css('transform', 'rotate(-90deg) scaleY(-1)');
+          break;
+        case 8:
+          el.css('transform', 'rotate(-90deg)');
+          break;
+      };
+    });
   });
   img.attr('src', src);
 }
@@ -156,10 +183,11 @@ function handleFileDrop(e) {
   handleFiles(files);
 }
 
-function AWSFile(file ,elem ,upload) {
+function AWSFile(file ,elem ,upload, exif) {
   this.file = file;
   this.elem = elem;
   this.upload = upload;
+  this.exif = exif;
 }
 
 function handleFiles(files) {  
