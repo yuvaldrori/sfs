@@ -12,6 +12,7 @@ AWSFiles.filesToUpload = [];
 AWSFiles.filesToDownload = [];
 AWSFiles.filesToDownloadIndex = 0;
 AWSFiles.bucketName = null;
+AWSFiles.folderName = null;
 AWSFiles.upload = function() {
   for(var i =  0; i < AWSFiles.filesToUpload.length ; i++) {
     var file = AWSFiles.filesToUpload[i].file;
@@ -25,11 +26,9 @@ AWSFiles.upload = function() {
       return $(".caption p", el).text("Sorry, file's too big!");
     } 
     else {
-      var bucketName = this.bucketName.split(":")[0];
-      var folderName = this.bucketName.split(":")[1];
-      var url = "https://"+bucketName+".s3.amazonaws.com/"
-        var fd = new FormData();
-      fd.append("key",folderName + "/${filename}");
+      var url = "https://"+this.bucketName+".s3.amazonaws.com/"
+      var fd = new FormData();
+      fd.append("key",this.folderName + "/${filename}");
       fd.append("acl","public-read");
       fd.append("Content-Type",file.type);
       fd.append('file', file);
@@ -50,7 +49,7 @@ AWSFiles.upload = function() {
 			  var dv = new DataView(barray);
 			  var blob = new Blob([dv],{type:f.type}); 
 			  var fd2 = new FormData();
-			  fd2.append("key",folderName + "/${filename}");
+			  fd2.append("key",this.folderName + "/${filename}");
 			  fd2.append("acl","public-read");
 			  fd2.append("Content-Type",f.type);
 			  fd2.append('file', blob, "thumb_"+f.name);
@@ -63,19 +62,20 @@ AWSFiles.upload = function() {
   
       
       }
-      sendForm(fd,AWSFiles.filesToUpload[i].elem,url);
+      sendForm(fd,this.filesToUpload[i],url,this.bucketName,this.folderName);
     }
 }
 
-AWSFiles.Init = function(bucket) {
-  AWSFiles.filesToUpload = [];
-  AWSFiles.filesToDownload = [];
-  AWSFiles.bucketName = bucket;
-  AWSFiles.filesToDownloadIndex = 0;
+AWSFiles.Init = function(decodedQR) {
+  this.filesToUpload = [];
+  this.filesToDownload = [];  
+  this.bucketName = decodedQR.split(":")[0];
+  this.folderName = decodedQR.split(":")[1];
+  this.filesToDownloadIndex = 0;
 }
 
 AWSFiles.readyToUpload = function() {
-  return AWSFiles.bucketName != null;
+  return this.bucketName != null;
 }
 
 AWSFiles.addFileToUpload = function(f, elem) {
@@ -188,8 +188,9 @@ function handleFileupload() {
 }
 
 
-function sendForm(form ,el ,url) {
+function sendForm(form ,AWSfile ,url,bucketName,folderName) {
   var xhr = new XMLHttpRequest();
+  var el = AWSfile.elem;
 
   $(".progress", el).show();
   xhr.upload.addEventListener("progress", (function(e) {
@@ -201,6 +202,10 @@ function sendForm(form ,el ,url) {
       if (xhr.status === 204) {
         $(".progress", el).removeClass("active").addClass("progress-success");
         $(".progress", el).hide();
+		$( "img", el ).hide("slow",function(){
+			addUploadedFile(folderName+"/"+AWSfile.file.name ,bucketName);
+			$(".caption p", el).hide("slow");
+		});
         return $(".caption p", el).text("Upload complete! ");
       } else {
         return $(".caption p", el).text("Upload failed ?");
@@ -221,17 +226,19 @@ function sendForm(form ,el ,url) {
 
 function addImageThumbnail(fileName, awsBucketName) {
   var thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
-  var fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" +
-    fileName.replace('thumb_', '');
+  var fullurl  = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName.replace('thumb_', '');
   var link = document.createElement('a');
   var img = new Image();
   link.href = fullurl;
   img.src = thumburl;
   img.className = "thumb";
+  
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
     e.append(link);
-    $( e ).attr('class', 'pic_place_holder');
+    $(e).attr('class', 'pic_place_holder');
+	$(e,"img").hide();
+	$(e,"img").show("slow");
   }
   link.appendChild(img);
 }
@@ -255,9 +262,16 @@ function downloadFiles(JSONresponse) {
   }
 }
 
-function getFilesList(decodedQR) {
-  var bucketName = decodedQR.split(":")[0];
-  var folderName = decodedQR.split(":")[1];
+
+function addUploadedFile(fileName ,bucketName)
+{
+	var elem = createPicPlaceHolder();
+	$('#previewDownloadImages').before(elem);
+	AWSFiles.addFileToDownload(elem);
+    addImageThumbnail(fileName ,bucketName);
+}
+
+function getFilesList(bucketName,folderName) {
 
   var url = window.location.origin + '/list';
   var xhr = new XMLHttpRequest();
@@ -278,7 +292,7 @@ function getFilesList(decodedQR) {
 }
 
 AWSFiles.getPictures = function() {
-  getFilesList(AWSFiles.bucketName);
+  getFilesList(this.bucketName,this.folderName);
 }
 
 function picturesInit(bucket) {
