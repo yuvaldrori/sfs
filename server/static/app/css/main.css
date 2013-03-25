@@ -81,13 +81,15 @@
   border-width: thin;
   border-color: gray;
   margin: 1em;
-  width: 140px;
-  height: 140px;
 }
 
 .pic_place_holder
 {
   margin: 1em;
+}
+
+.thumbnail
+{
   width: 140px;
   height: 140px;
 }

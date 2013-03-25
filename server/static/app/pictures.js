@@ -126,7 +126,7 @@ function createPicPlaceHolder() {
 
 function preview(f) {
   var el, img, progress;
-  el = $( '<div class="thumbnail_empty">' +
+  el = $( '<div class="thumbnail">' +
             '<img class="thumb"/>' +
           '</div>' );
   var img = $( "img", el );
@@ -259,18 +259,21 @@ function addImageThumbnail(fileName, awsBucketName) {
       fileName;
     fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
   }
+  var div = document.createElement('div');
   var link = document.createElement('a');
   var img = new Image();
+  div.className = 'thumbnail';
   link.href = fullurl;
   link.target = '_blank';
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
-    e.append(link);
+    e.append(div);
     $(e).attr('class', 'pic_place_holder');
   }
   img.src = thumburl;
   img.className = "thumb";
   link.appendChild(img);
+  div.appendChild(link);
 }
 
 function downloadFiles(JSONresponse) {
