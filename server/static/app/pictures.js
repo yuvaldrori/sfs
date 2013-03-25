@@ -49,7 +49,7 @@ AWSFiles.upload = function() {
 			  var dv = new DataView(barray);
 			  var blob = new Blob([dv],{type:f.type}); 
 			  var fd2 = new FormData();
-			  fd2.append("key",this.folderName + "/${filename}");
+			  fd2.append("key",AWSFiles.folderName + "/${filename}");
 			  fd2.append("acl","public-read");
 			  fd2.append("Content-Type",f.type);
 			  fd2.append('file', blob, "thumb_"+f.name);
@@ -57,7 +57,7 @@ AWSFiles.upload = function() {
 			  xhr.open("POST", url, true);
 			  xhr.send(fd2);
 			}
-		  }
+		}
 	  })(file,image);
   
       
@@ -226,15 +226,11 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
   }), false);
 
   xhr.addEventListener("load", function(e) {
-    if(xhr.readyState == 4 ) {
-      if (xhr.status === 204) {
-        $(".progress", el).removeClass("active").addClass("progress-success");
-        $(".progress", el).hide();
-		$( "img", el ).hide("slow",function(){
-			addUploadedFile(folderName+"/"+AWSfile.file.name ,bucketName);
-			$(".caption p", el).hide("slow");
-		});
-        return $(".caption p", el).text("Upload complete! ");
+    if(xhr.readyState === 4 ) {
+      if(xhr.status === 204) {
+		    $( el ).hide("slow",function() {
+          addUploadedFile(folderName+"/"+AWSfile.file.name ,bucketName);
+        });
       } else {
         return $(".caption p", el).text("Upload failed ?");
       }
@@ -245,10 +241,6 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
   xhr.open("POST", url, true);
   xhr.send(form);
 }
-
-
-
-
 
 /************************************ Download Functions ****************************************************/
 
