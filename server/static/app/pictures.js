@@ -228,9 +228,12 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
   xhr.addEventListener("load", function(e) {
     if(xhr.readyState === 4 ) {
       if(xhr.status === 204) {
-		    $( el ).hide("slow",function() {
-          addUploadedFile(folderName+"/"+AWSfile.file.name ,bucketName);
-        });
+        el.unbind('click');
+        $( 'p', el ).empty();
+        $( 'img', el ).wrap('<a href="https://' + bucketName +
+          '.s3.amazonaws.com/' + folderName + '/' + AWSfile.file.name +
+          '" target="_blank"></a>');
+        $('#previewDownloadImages').prepend(el);
       } else {
         return $(".caption p", el).text("Upload failed ?");
       }
@@ -245,21 +248,28 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
 /************************************ Download Functions ****************************************************/
 
 function addImageThumbnail(fileName, awsBucketName) {
-  var thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
-  var fullurl  = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName.replace('thumb_', '');
+  var re = /\/thumb_/;
+  var thumbrul, fullurl;
+  if(re.test(fileName)) {
+    thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+    fullurl  = "https://" + awsBucketName + ".s3.amazonaws.com/" +
+      fileName.replace('thumb_', '');
+  } else {
+    thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/thumb_" +
+      fileName;
+    fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+  }
   var link = document.createElement('a');
   var img = new Image();
   link.href = fullurl;
-  img.src = thumburl;
-  img.className = "thumb";
-  
+  link.target = '_blank';
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
     e.append(link);
     $(e).attr('class', 'pic_place_holder');
-	$(e,"img").hide();
-	$(e,"img").show("slow");
   }
+  img.src = thumburl;
+  img.className = "thumb";
   link.appendChild(img);
 }
 
@@ -280,15 +290,6 @@ function downloadFiles(JSONresponse) {
       addImageThumbnail(fileName ,listObjects.Name);
     });
   }
-}
-
-
-function addUploadedFile(fileName ,bucketName)
-{
-	var elem = createPicPlaceHolder();
-	$('#previewDownloadImages').before(elem);
-	AWSFiles.addFileToDownload(elem);
-    addImageThumbnail(fileName ,bucketName);
 }
 
 function getFilesList(bucketName,folderName) {
