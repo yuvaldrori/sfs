@@ -267,7 +267,7 @@ function addImageThumbnail(fileName, awsBucketName) {
   link.target = '_blank';
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
-    e.append(div);
+    e.prepend(div);
     $(e).attr('class', 'pic_place_holder');
   }
   img.src = thumburl;
