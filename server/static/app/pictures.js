@@ -323,5 +323,9 @@ function picturesInit(bucket) {
   AWSFiles.Init(bucket);
   AWSFiles.getPictures();
   pageTurn($( "#pictures" ));
+  
+  history.pushState({ page: 3 ,bucketData: bucket}, "pictures", "pictures.html");
 }
+
+
 

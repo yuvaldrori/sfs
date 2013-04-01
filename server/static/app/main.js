@@ -1,10 +1,15 @@
 $( document ).ready( function() {
+
+  history.pushState({ page: 1 }, "the welcome Page", "welcome.html");
+  
   pageTurn($( "#welcome_page" ));
   $( "#gencode_button" ).click(function() {
     genQR();
   });
+  
   $( "#picture_button" ).click(function() {
-    pageTurn($( "#decode_qr_page" ));
+	  history.pushState({ page: 2 }, "decode pic", "decodeQR.html");
+      pageTurn($( "#decode_qr_page" ));
     $( "#magic_picture" ).change(decodeMagicPicture);
   });
 });
@@ -32,6 +37,7 @@ function genQR() {
         $( "#qr_code" ).append(img);
         $( "#website>p" ).text('goto: ' + window.location.origin);
         pageTurn($( "#new_event_page" ));
+		history.pushState({ page: 4 }, "generate QR", "genQR.html");
       }
     }
   });
@@ -67,6 +73,7 @@ function decodeMagicPicture() {
         $( "#bad_qr_image" ).attr('src', src);
         $( "#bad_qr_manual" ).hide();
         pageTurn($( "#crop_qr_page" ));
+		history.pushState({ page: 5 }, "crop QR", "cropQR.html");
         $( "#crop_button" ).click(function() {
           c = jcrop_api.tellSelect();
           var canvas = document.createElement('canvas');
@@ -103,5 +110,32 @@ function decodeMagicPicture() {
     qrcode.decode(src);
   };
 }
+
+window.onpopstate = function(event) {
+	var currentState = history.state;
+	if(!currentState.page)
+		return;
+	switch(currentState.page)
+	{
+		case 1:
+			pageTurn($( "#welcome_page" ));
+			break;
+		case 2:
+			pageTurn($( "#decode_qr_page" ));
+			break;
+		case 3:
+			picturesInit(currentState.bucketData);
+			console.log("page 3");
+			break;
+		case 4:
+			pageTurn($( "#new_event_page" ));
+			break;
+		case 5:
+			pageTurn($( "#crop_qr_page" ));
+			break;
+		default:
+	}
+  
+};
 
 
