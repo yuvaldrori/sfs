@@ -1,6 +1,6 @@
 $( document ).ready( function() {
 
-  history.pushState({ page: 1 }, "the welcome Page", "welcome.html");
+  history.pushState({ page: 1 });
   
   pageTurn($( "#welcome_page" ));
   $( "#gencode_button" ).click(function() {
@@ -8,7 +8,7 @@ $( document ).ready( function() {
   });
   
   $( "#picture_button" ).click(function() {
-	  history.pushState({ page: 2 }, "decode pic", "decodeQR.html");
+	  history.pushState({ page: 2 });
       pageTurn($( "#decode_qr_page" ));
     $( "#magic_picture" ).change(decodeMagicPicture);
   });
@@ -19,28 +19,39 @@ function pageTurn(page) {
   $( page ).show();
 }
 
+function genFolderName(digits) {
+  var power = Math.pow(36,digits);
+  return Math.floor(Math.random()*power).toString(36);
+}  
+
 function genQR() {
-	var url = window.location.origin + '/event';
-  var qrTypeNumber = 5;
+  var qrTypeNumber = 4;
   var qrErrorCorrectionLevel = 'M';
   var size = Math.min($(window).width(), $(window).height()) * 0.9;
   // cell size calc taken from genqr code
   var qrCellSize = Math.floor(size / (qrTypeNumber * 4 + 25));
-  $.ajax(url).done(function(text) {
-    var qr = genQRcode(qrTypeNumber,qrErrorCorrectionLevel);
-    if(qr != null) {
-      qr.addData(text);
-      qr.make();
-      var img = qr.createImgTag(qrCellSize);
-      $( "#folder>p" ).text(text);
-      if(img != null) {
-        $( "#qr_code" ).append(img);
-        $( "#website>p" ).text('goto: ' + window.location.origin);
-        pageTurn($( "#new_event_page" ));
-		history.pushState({ page: 4 }, "generate QR", "genQR.html");
-      }
+  var qr = genQRcode(qrTypeNumber,qrErrorCorrectionLevel);
+  if(qr != null) {
+    d = new Date();
+    r = genFolderName(8);
+    sday = ("0" + d.getDate()).slice(-2);
+    smonth = ("0" + (d.getMonth() + 1)).slice(-2);
+    syear = d.getFullYear().toString();
+    text = sday + smonth + syear + r;
+    qr.addData(text);
+    qr.make();
+    var img = qr.createImgTag(qrCellSize);
+    $( "#ddmm" ).text(text.slice(0, 4));
+    $( "#yyyy" ).text(text.slice(4, 8));
+    $( "#1st4" ).text(text.slice(8, 12));
+    $( "#2nd4" ).text(text.slice(12, 16));
+    if(img != null) {
+      $( "#qr_code" ).append(img);
+      $( "#website>p" ).text('goto: ' + window.location.origin);
+      pageTurn($( "#new_event_page" ));
+      history.pushState({ page: 4 });
     }
-  });
+  }
 }
 
 function decodeMagicPicture() {
@@ -73,7 +84,7 @@ function decodeMagicPicture() {
         $( "#bad_qr_image" ).attr('src', src);
         $( "#bad_qr_manual" ).hide();
         pageTurn($( "#crop_qr_page" ));
-		history.pushState({ page: 5 }, "crop QR", "cropQR.html");
+		history.pushState({ page: 5 });
         $( "#crop_button" ).click(function() {
           c = jcrop_api.tellSelect();
           var canvas = document.createElement('canvas');

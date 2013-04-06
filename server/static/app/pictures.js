@@ -11,7 +11,7 @@ AWSFiles = {};
 AWSFiles.filesToUpload = [];
 AWSFiles.filesToDownload = [];
 AWSFiles.filesToDownloadIndex = 0;
-AWSFiles.bucketName = null;
+AWSFiles.bucketName = 'sfsbucket';
 AWSFiles.folderName = null;
 AWSFiles.upload = function() {
   for(var i =  0; i < AWSFiles.filesToUpload.length ; i++) {
@@ -69,8 +69,7 @@ AWSFiles.upload = function() {
 AWSFiles.Init = function(decodedQR) {
   this.filesToUpload = [];
   this.filesToDownload = [];  
-  this.bucketName = decodedQR.split(":")[0];
-  this.folderName = decodedQR.split(":")[1];
+  this.folderName = decodedQR;
   this.filesToDownloadIndex = 0;
 }
 
@@ -324,7 +323,7 @@ function picturesInit(bucket) {
   AWSFiles.getPictures();
   pageTurn($( "#pictures" ));
   
-  history.pushState({ page: 3 ,bucketData: bucket}, "pictures", "pictures.html");
+  history.pushState({ page: 3 ,bucketData: bucket});
 }
 
 

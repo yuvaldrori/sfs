@@ -2,7 +2,6 @@ var util = require('util');
 var http = require('http');
 var router = require('router');
 var route = router();
-var uuid = require('node-uuid');
 var static = require('node-static');
 var AWS = require('aws-sdk');
 
@@ -18,12 +17,6 @@ var sfsBucket = process.env.SFSBUCKET;
 var port = (process.env.SFSPORT === undefined) ? 80 : process.env.SFSPORT;
 
 process.chdir(__dirname);
-
-route.get('/event', function(req, res) {
-  var eventName = uuid.v4();
-  res.writeHead(200);
-  res.end(sfsBucket + ':' + eventName);
-});
 
 route.post('/list', function(req, res) {
 
