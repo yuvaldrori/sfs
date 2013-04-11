@@ -57,7 +57,7 @@ function genQR() {
 function isFolder(JSONresponse) {
   var listObjects = JSON.parse(JSONresponse);
   if(listObjects.Contents.length < 1) {
-    console.log('are you first???');
+    $( "#manual_tip" ).prepend('<p>No folder with this name exists, you might be the first to upload pictures. Just in case, please compare the typed code with the picture.</p>');
   }
   $( "#submit_code_manually" ).removeAttr('disabled');
 }
@@ -97,17 +97,19 @@ function validateManualCode() {
   }
   if(ddmm_ok === true && yyyy_ok === true) {
     var fd = new Date(yyyy, mm - 1, dd);
+    var message = '';
     diff = Math.abs(Math.round((d - fd)/1000/60/60/24));
     if(diff > 14) {
-      console.log('please check red and blue');
+      $( "#manual_tip" ).empty();
+      $( "#manual_tip" ).append('<p>please check red and blue.</p>');
       if(dd < 1 || dd > 31) {
-        console.log('you should check first two red characters');
+        $( "#manual_tip" ).append('<p>you should check first two red characters.</p>');
       }
       if(mm < 1 || dd > 12) {
-        console.log('you should check last two red characters');
+        $( "#manual_tip" ).append('<p>you should check first two red characters.</p>');
       }
       if(yyyy != d.getFullYear()) {
-        console.log('you should check blue characters');
+        $( "#manual_tip" ).append('<p>you should check blue characters.</p>');
       }
     }
   }
@@ -190,9 +192,7 @@ function decodeMagicPicture() {
               });
               $( "#bad_qr_manual" ).show();
               $( "#bad_qr_status" ).html('<p>I was not able to automatically read the QR code from the marked region. Please try again or manually type the code.</p><p>Please note, if the code is mistyped, you will not be able to see the pictures of other participants nor will they be able to view the pictures you upload.</p>');
-              console.log(e);
             } else {
-              console.log(d);
               picturesInit(d);
             };
           };

@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Pick Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="lib/jquery.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
     <script src="lib/jquery.Jcrop.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/jquery.Jcrop.min.css" type="text/css" />
     <link rel="stylesheet" href="css/main.css" type="text/css" />
   </head>
@@ -12,12 +15,12 @@
     <div id="screen">
       
       <div class="page" id="welcome_page">
-        <div class="button" id="gencode_button">
+        <div class="btn" id="gencode_button">
           <p>
             new
           </p>
         </div>
-        <div class="button" id="picture_button">
+        <div class="btn" id="picture_button">
           <p>
             pictures
           </p>
@@ -61,7 +64,7 @@
           <img id="bad_qr_image"></img>
         </div>
         <div>
-          <div class="button" id="crop_button">
+          <div class="btn" id="crop_button">
             <p>
               crop
             </p>
@@ -83,7 +86,11 @@
               <input type="text" id="input_2nd4" maxlength="4">
               <label id="label_2nd4"></label>
             </form>
-            <button id="submit_code_manually" class="button" disabled>
+            <div id="manual_tip">
+              <p>
+              </p>
+            </div>
+            <button id="submit_code_manually" class="btn" disabled>
               Submit code manually.
             </button>
           </div>
@@ -98,7 +105,7 @@
             </div>
             <input type="file" name="files[]" id="files_uploader" multiple>
           </div>
-          <div class="button" id="upload_button">
+          <div class="btn" id="upload_button">
             upload
           </div>
         </div>
@@ -112,7 +119,7 @@
         <div id="zoom_qr">
           <img id="bad_qr_image"></img>
         </div>
-        <div class="button" id="crop_button">
+        <div class="btn" id="crop_button">
           <p>
             crop
           </p>
@@ -124,7 +131,7 @@
         </div>
         <div id="bad_qr_manual">
           <input type="text" id="manual_code_input">
-          <div class="button" id="submit_code_manually">
+          <div class="btn" id="submit_code_manually">
             <p>
               Submit code manually.
             </p>
