@@ -54,6 +54,88 @@ function genQR() {
   }
 }
 
+function isFolder(JSONresponse) {
+  var listObjects = JSON.parse(JSONresponse);
+  if(listObjects.Contents.length < 1) {
+    console.log('are you first???');
+  }
+  $( "#submit_code_manually" ).removeAttr('disabled');
+}
+
+function validateManualCode() {
+  var d = new Date();
+  var ddmm = $( "#input_ddmm" ).val();
+  var lddmm = ddmm.length;
+  var dd = ddmm.slice(0, 2);
+  var mm = ddmm.slice(2, 4);
+  var yyyy = $( "#input_yyyy" ).val()
+  var lyyyy = yyyy.length;
+  var fst4 = $( "#input_1st4" ).val().toLowerCase();
+  var l1st4 = fst4.length;
+  var snd4 = $( "#input_2nd4" ).val().toLowerCase();
+  var l2nd4 = snd4.length;
+  var ddmm_ok = false;
+  var yyyy_ok = false;
+  var fst4_ok = false;
+  var snd4_ok = false;
+
+  if(lddmm === 4) {
+    if(isNaN(ddmm)) {
+      $( "#label_ddmm" ).text('expected numbers');
+    } else {
+      $( "#label_ddmm" ).text('');
+      ddmm_ok = true;
+    }
+  }
+  if(lyyyy === 4) {
+    if(isNaN(yyyy)) {
+      $( "#label_yyyy" ).text('expected numbers');
+    } else {
+      $( "#label_yyyy" ).text('');
+      yyyy_ok = true;
+    }
+  }
+  if(ddmm_ok === true && yyyy_ok === true) {
+    var fd = new Date(yyyy, mm - 1, dd);
+    diff = Math.abs(Math.round((d - fd)/1000/60/60/24));
+    if(diff > 14) {
+      console.log('please check red and blue');
+      if(dd < 1 || dd > 31) {
+        console.log('you should check first two red characters');
+      }
+      if(mm < 1 || dd > 12) {
+        console.log('you should check last two red characters');
+      }
+      if(yyyy != d.getFullYear()) {
+        console.log('you should check blue characters');
+      }
+    }
+  }
+  if(l1st4 === 4) {
+    if(!/[0-9a-z]{4}/.test(fst4)) {
+      $( "#label_1st4" ).text('expected letters or numbers');
+    } else {
+      $( "#label_1st4" ).text('');
+      fst4_ok = true;
+    }
+  }
+  if(l2nd4 === 4) {
+    if(!/[0-9a-z]{4}/.test(snd4)) {
+      $( "#label_2nd4" ).text('expected letters or numbers');
+    } else {
+      $( "#label_2nd4" ).text('');
+      snd4_ok = true;
+    }
+  }
+  if(ddmm_ok === true && yyyy_ok === true && fst4_ok === true &&
+      snd4_ok === true) {
+    //TODO: what to do when xhr fails?
+    getFilesList(AWSFiles.bucketName, ddmm + yyyy + fst4 + snd4, isFolder);
+  } else {
+    $( "#submit_code_manually" ).attr('disabled', 'disabled');
+  }
+}
+
 function decodeMagicPicture() {
   if (this.files && this.files.length > 0 && this.files[0].type.match('image.*')) {
     var file = {};
@@ -95,16 +177,19 @@ function decodeMagicPicture() {
             c.w, c.h);
           qrcode.callback = function(e, d) {
             if (e) {
-              $( "#submit_code_manualy" ).click(function() {
-                var re = /sfs_\w{8}-\w{4}-\w{4}-\w{4}-\w{12}:\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/;
-                if (re.test($( "#manual_code_input" ).val())) {
-                  console.log('OK');
-                } else {
-                  $( "#bad_qr_status>p" ).text('Bad manual code.');
-                };
+              $( "#input_ddmm" ).bind('change keyup', validateManualCode);
+              $( "#input_yyyy" ).bind('change keyup', validateManualCode);
+              $( "#input_1st4" ).bind('change keyup', validateManualCode);
+              $( "#input_2nd4" ).bind('change keyup', validateManualCode);
+              $( "#submit_code_manually" ).click(function() {
+                var ddmm = $( "#input_ddmm" ).val();
+                var yyyy = $( "#input_yyyy" ).val();
+                var f4 = $( "#input_1st4" ).val().toLowerCase();
+                var s4 = $( "#input_2nd4" ).val().toLowerCase();
+                picturesInit(ddmm + yyyy + f4 + s4);
               });
               $( "#bad_qr_manual" ).show();
-              $( "#bad_qr_status>p" ).text('Could not decode, please try again or manually enter the code.');
+              $( "#bad_qr_status" ).html('<p>I was not able to automatically read the QR code from the marked region. Please try again or manually type the code.</p><p>Please note, if the code is mistyped, you will not be able to see the pictures of other participants nor will they be able to view the pictures you upload.</p>');
               console.log(e);
             } else {
               console.log(d);

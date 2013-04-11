@@ -294,7 +294,7 @@ function downloadFiles(JSONresponse) {
   }
 }
 
-function getFilesList(bucketName,folderName) {
+function getFilesList(bucketName,folderName, func) {
 
   var url = window.location.origin + '/list';
   var xhr = new XMLHttpRequest();
@@ -308,14 +308,14 @@ function getFilesList(bucketName,folderName) {
   xhr.onloadend = function () {
     if(xhr.readyState == 4 ) {
       if (xhr.status == 200) {
-        downloadFiles(xhr.responseText);
+        func(xhr.responseText);
       }
     }
   };
 }
 
 AWSFiles.getPictures = function() {
-  getFilesList(this.bucketName,this.folderName);
+  getFilesList(this.bucketName, this.folderName, downloadFiles);
 }
 
 function picturesInit(bucket) {

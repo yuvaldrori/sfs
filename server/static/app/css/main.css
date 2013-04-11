@@ -34,7 +34,7 @@
   padding: 1em;
 }
 
-#previewUploadImages, #previewDownloadImages, #upload_pics
+#previewUploadImages, #previewDownloadImages, #upload_pics, #folder, #manual_input
 {
   display: -webkit-box;
   display: -moz-box;
@@ -103,27 +103,29 @@
 #folder>p
 {
   font-size: 3em;
+  margin: 0.1em;
+  padding: 0.05em;
 }
 
-#ddmm, #input_ddmm
+#ddmm, #input_ddmm, #label_ddmm
 {
   color: white;
   background: red;
 }
 
-#yyyy, #input_yyyy
+#yyyy, #input_yyyy, #label_yyyy
 {
   color: white;
   background: blue;
 }
 
-[id='1st4'], #input_1st4
+[id='1st4'], #input_1st4, #label_1st4
 {
   color: white;
   background: green;
 }
 
-[id='2nd4'], #input_2nd4
+[id='2nd4'], #input_2nd4, #label_2nd4
 {
   color: white;
   background: yellow;

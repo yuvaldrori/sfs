@@ -60,25 +60,32 @@
         <div id="bad_qr">
           <img id="bad_qr_image"></img>
         </div>
-        <div class="button" id="crop_button">
-          <p>
-            crop
-          </p>
-        </div>
-        <div id="bad_qr_status">
-          <p>
-            Could not decode, please help by picking the code area from the picture.
-          </p>
-        </div>
-        <div id="bad_qr_manual">
-          <input type="text" id="input_ddmm" maxlength="4" autofocus>
-          <input type="text" id="input_yyyy" maxlength="4">
-          <input type="text" id="input_1st4" maxlength="4">
-          <input type="text" id="input_2nd4" maxlength="4">
-          <div class="button" id="submit_code_manualy">
+        <div>
+          <div class="button" id="crop_button">
             <p>
-              Submit code manually.
+              crop
             </p>
+          </div>
+          <div id="bad_qr_status">
+            <p>
+            I was not able to automatically read the QR code. Please mark the
+            QR code region and press the "crop" button to try again.
+            </p>
+          </div>
+          <div id="bad_qr_manual">
+            <form id="manual_input">
+              <input type="text" id="input_ddmm" maxlength="4" autofocus>
+              <label id="label_ddmm"></label>
+              <input type="text" id="input_yyyy" maxlength="4">
+              <label id="label_yyyy"></label>
+              <input type="text" id="input_1st4" maxlength="4">
+              <label id="label_1st4"></label>
+              <input type="text" id="input_2nd4" maxlength="4">
+              <label id="label_2nd4"></label>
+            </form>
+            <button id="submit_code_manually" class="button" disabled>
+              Submit code manually.
+            </button>
           </div>
         </div>
       </div>
@@ -117,7 +124,7 @@
         </div>
         <div id="bad_qr_manual">
           <input type="text" id="manual_code_input">
-          <div class="button" id="submit_code_manualy">
+          <div class="button" id="submit_code_manually">
             <p>
               Submit code manually.
             </p>
