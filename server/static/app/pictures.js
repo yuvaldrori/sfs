@@ -17,53 +17,40 @@ AWSFiles.upload = function() {
   for(var i =  0; i < AWSFiles.filesToUpload.length ; i++) {
     var file = AWSFiles.filesToUpload[i].file;
     var el = AWSFiles.filesToUpload[i].elem;
-
     if(!AWSFiles.filesToUpload[i].upload) {
       continue;
     }
-
-    if (file.size > (5 * 1024 * 1024)) { //5MB
-      return $(".caption p", el).text("Sorry, file's too big!");
-    } 
-    else {
-      var url = "https://"+this.bucketName+".s3.amazonaws.com/"
-      var fd = new FormData();
-      fd.append("key",this.folderName + "/${filename}");
-      fd.append("acl","public-read");
-      fd.append("Content-Type",file.type);
-      fd.append('file', file);
-
-      var image = new Image();
-      image.src = $("img",el).attr('src');
-	  
+    var url = "https://"+this.bucketName+".s3.amazonaws.com/"
+    var fd = new FormData();
+    fd.append("key",this.folderName + "/${filename}");
+    fd.append("acl","public-read");
+    fd.append("Content-Type",file.type);
+    fd.append('file', file);
+    var image = new Image();
+    image.src = $("img",el).attr('src');
 	  (function(f,img) {
-	  
-		img.onload = function() {
-			var minImageData =  resizeImage(img,0.5,f.type);
-			//decode the base64 binary into am ArrayBuffer 
-			var separator = 'base64,';  
-			var index = minImageData.indexOf(separator);
-			
-			if (index != -1) {  
-			  var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
-			  var dv = new DataView(barray);
-			  var blob = new Blob([dv],{type:f.type}); 
-			  var fd2 = new FormData();
-			  fd2.append("key",AWSFiles.folderName + "/${filename}");
-			  fd2.append("acl","public-read");
-			  fd2.append("Content-Type",f.type);
-			  fd2.append('file', blob, "thumb_"+f.name);
-			  var xhr = new XMLHttpRequest();
-			  xhr.open("POST", url, true);
-			  xhr.send(fd2);
-			}
-		}
-	  })(file,image);
-  
-      
+      img.onload = function() {
+        var minImageData =  resizeImage(img,0.5,f.type);
+        //decode the base64 binary into am ArrayBuffer 
+        var separator = 'base64,';  
+        var index = minImageData.indexOf(separator);
+        if (index != -1) {  
+          var barray = Base64Binary.decodeArrayBuffer(minImageData.substring(index+separator.length)); 
+          var dv = new DataView(barray);
+          var blob = new Blob([dv],{type:f.type}); 
+          var fd2 = new FormData();
+          fd2.append("key",AWSFiles.folderName + "/${filename}");
+          fd2.append("acl","public-read");
+          fd2.append("Content-Type",f.type);
+          fd2.append('file', blob, "thumb_"+f.name);
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", url, true);
+          xhr.send(fd2);
+        }
       }
-      sendForm(fd,this.filesToUpload[i],url,this.bucketName,this.folderName);
-    }
+	  })(file,image);
+    sendForm(fd,this.filesToUpload[i],url,this.bucketName,this.folderName);
+  }
 }
 
 AWSFiles.Init = function(decodedQR) {
@@ -208,6 +195,7 @@ function handleFileSelect(event) {
 }
 
 function handleFileupload() {
+  $( "#upload_button" ).hide();
   AWSFiles.upload();
 }
 
@@ -231,12 +219,10 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
           '" target="_blank"></a>');
         $('#previewDownloadImages').prepend(el);
       } else {
-        return $(".caption p", el).text("Upload failed ?");
       }
     }
   },false);
 
-  $(".caption p", el).text("Starting upload...");
   xhr.open("POST", url, true);
   xhr.send(form);
 }
