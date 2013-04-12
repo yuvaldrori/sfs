@@ -71,28 +71,41 @@
           </div>
           <div id="bad_qr_status">
             <p>
-            I was not able to automatically read the QR code. Please mark the
+            I was unable to automatically read the QR code. Please mark the
             QR code region and press the "crop" button to try again.
             </p>
           </div>
           <div id="bad_qr_manual">
-            <form id="manual_input">
-              <input type="text" id="input_ddmm" maxlength="4" autofocus>
-              <label id="label_ddmm"></label>
-              <input type="text" id="input_yyyy" maxlength="4">
-              <label id="label_yyyy"></label>
-              <input type="text" id="input_1st4" maxlength="4">
-              <label id="label_1st4"></label>
-              <input type="text" id="input_2nd4" maxlength="4">
-              <label id="label_2nd4"></label>
+            <form class="form-horizontal" id="manual_input">
+              <div class="control-group">
+                <div class="controls">
+                  <input class="input-mini" type="text" id="input_ddmm"
+                  maxlength="4" autofocus>
+                  <span class="help-inline" id="label_ddmm"></span>
+                </div>
+                <div class="controls">
+                  <input class="input-mini" type="text" id="input_yyyy" maxlength="4">
+                  <span class="help-inline" id="label_yyyy"></span>
+                </div>
+                <div class="controls">
+                  <input class="input-mini" type="text" id="input_1st4" maxlength="4">
+                  <span class="help-inline" id="label_1st4"></span>
+                </div>
+                <div class="controls">
+                  <input class="input-mini" type="text" id="input_2nd4" maxlength="4">
+                  <span class="help-inline" id="label_2nd4"></span>
+                </div>
+                <div class="controls">
+                  <button id="submit_code_manually" class="btn" disabled>
+                    Submit code manually.
+                  </button>
+                </div>
+              </div>
             </form>
             <div id="manual_tip">
               <p>
               </p>
             </div>
-            <button id="submit_code_manually" class="btn" disabled>
-              Submit code manually.
-            </button>
           </div>
         </div>
       </div>
@@ -110,8 +123,8 @@
           </div>
         </div>
         <div id="download_pics">
-          <div id="previewDownloadImages">
-          </div>
+          <ul class="thumbnails" id="previewDownloadImages">
+          </ul>
         </div>
       </div>
 

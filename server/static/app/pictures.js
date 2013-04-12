@@ -113,26 +113,20 @@ function resizeImage(img,ratio,type) {
 }
 
 function createPicPlaceHolder() {
-  var el = $('<div class="pic_place_holder_empty">' +
-               '<div class="caption">' +
-                 '<p></p>' +
-                 '<div class="progress" visibility: hidden>' +
-                 '</div>' +
-               '<div/>' +
-             '</div>');
+  var el = $('<li class="span4">' +
+             '</li>');
   return el;
 }
 
 function preview(f) {
   var el, img, progress;
-  el = $( '<div class="thumbnail">' +
-            '<img class="thumb"/>' +
-          '</div>' );
+  el = $( '<a href="#" class="thumbnail">' +
+            '<img />' +
+          '</a>' );
   var img = $( "img", el );
   $( f.elem ).prepend(el);
   var src = window.URL.createObjectURL(f.file);
   img.load(function() {
-    f.elem.attr('class', 'pic_place_holder');
     img.exifLoad(function() {
       f.exif = img.exifAll();
       switch(f.exif[0].Orientation) {
@@ -191,13 +185,14 @@ function AWSFile(file ,elem ,upload, exif) {
 
 function handleFiles(files) {  
   $("#previewUploadImages").children().remove();
+  $("#previewUploadImages").append('<ul class="thumbnails"></ul>');
   for(var i = 0; i < files.length ; i++) {
     var file = files[i];
     if (!file.type.match('image.*')) {
       continue;
     }
     var elem = createPicPlaceHolder();
-    $( "#previewUploadImages" ).append(elem);
+    $( "#previewUploadImages>ul" ).append(elem);
     AWSFiles.addFileToUpload(file, elem);
   }
   for(var i = 0; i < AWSFiles.filesToUpload.length ; i++) {
@@ -258,21 +253,17 @@ function addImageThumbnail(fileName, awsBucketName) {
       fileName;
     fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
   }
-  var div = document.createElement('div');
   var link = document.createElement('a');
   var img = new Image();
-  div.className = 'thumbnail';
+  link.className = 'thumbnail';
   link.href = fullurl;
   link.target = '_blank';
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
-    e.prepend(div);
-    $(e).attr('class', 'pic_place_holder');
+    e.prepend(link);
   }
   img.src = thumburl;
-  img.className = "thumb";
   link.appendChild(img);
-  div.appendChild(link);
 }
 
 function downloadFiles(JSONresponse) {
