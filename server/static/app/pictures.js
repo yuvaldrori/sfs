@@ -99,7 +99,6 @@ function displayUploadProgress(el, event) {
     $(".bar", el).css({
       "width": "" + percent + "%"
     });
-    return $(".caption p", el).text("" + percent + "% uploaded");
   }
 };
 
@@ -113,13 +112,16 @@ function resizeImage(img,ratio,type) {
 }
 
 function createPicPlaceHolder() {
-  var el = $('<li class="span4">' +
+  var el = $('<li class="span2">' +
+             '  <div class="progress" style="display: none;">' +
+             '    <div class="bar"></div>' +
+             '  </div>' +
              '</li>');
   return el;
 }
 
 function preview(f) {
-  var el, img, progress;
+  var el, img;
   el = $( '<a href="#" class="thumbnail">' +
             '<img />' +
           '</a>' );
@@ -223,7 +225,7 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
     if(xhr.readyState === 4 ) {
       if(xhr.status === 204) {
         el.unbind('click');
-        $( 'p', el ).empty();
+        $( '.progress', el ).remove();
         $( 'img', el ).wrap('<a href="https://' + bucketName +
           '.s3.amazonaws.com/' + folderName + '/' + AWSfile.file.name +
           '" target="_blank"></a>');
