@@ -9,26 +9,30 @@
     <script src="lib/jquery.Jcrop.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/jquery.Jcrop.min.css" type="text/css" />
+	<link rel="stylesheet" href="css/fileinput.css" type="text/css" />
     <link rel="stylesheet" href="css/main.css" type="text/css" />
   </head>
   <body>
     <div id="screen">
       
       <div class="page" id="welcome_page">
-        <div class="btn" id="gencode_button">
+        <div class="btn btn btn-danger btn-picup"  id="gencode_button">
           <p>
+		  <i class="icon-qrcode icon-white"></i>
             new
           </p>
         </div>
-        <div class="btn" id="picture_button">
+        <div class="btn btn-primary btn-picup" id="picture_button">
           <p>
+			<i class="icon-camera icon-white"></i>
             pictures
           </p>
         </div>
         <div id="help">
-          <p>
-            Explain picup + a video
-          </p>
+			<h4>Explain picup + a video</h4>
+			<p>
+			<iframe width="260" height="185" src="http://www.youtube.com/embed/F8qcDQaY8Mw" frameborder="0" allowfullscreen></iframe>
+			</p>
         </div>
       </div>
 
@@ -41,7 +45,7 @@
           </p>
         </div>
         <div id="folder">
-          <p id="ddmm">
+          <p  id="ddmm">
           </p>
           <p id="yyyy">
           </p>
@@ -56,7 +60,11 @@
         <p>
           Please select the picture with the special code:
         </p>
-        <input type="file" id="magic_picture">
+		<span class="btn btn-success fileinput-button">
+            <i class="icon-qrcode icon-white"></i>
+			<span>Select Picture</span>
+			<input type="file" id="magic_picture">
+        </span>
       </div>
 
       <div class="page" id="crop_qr_page" style="display: none;">
@@ -101,11 +109,18 @@
         <div id="upload_pics">
           <div id="previewUploadImages">
             <div id="helpInfo">
-              <div>drag & drop or select files for upload</div>
+              <h4>drag & drop or select files for upload</h4>
             </div>
-            <input type="file" name="files[]" id="files_uploader" multiple>
+			
+			<span class="btn btn-success fileinput-button">
+				<i class="icon-plus icon-white"></i>
+				<span>Select Pictures</span>
+				<input type="file" name="files[]" id="files_uploader" multiple>
+			</span>
+		
           </div>
-          <div class="btn" id="upload_button">
+          <div class="btn btn-warning" id="upload_button">
+		  <i class="icon-upload icon-white"></i>
             upload
           </div>
         </div>
