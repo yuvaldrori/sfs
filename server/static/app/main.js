@@ -209,7 +209,7 @@ function decodeMagicPicture() {
 
 window.onpopstate = function(event) {
 	var currentState = history.state;
-	if(!currentState.page)
+	if(!currentState || !currentState.page)
 		return;
 	switch(currentState.page)
 	{

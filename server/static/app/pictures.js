@@ -80,11 +80,6 @@ AWSFiles.readyToUpload = function() {
 AWSFiles.addFileToUpload = function(f, elem) {
   var awsFile = new AWSFile(f, elem, true);
   this.filesToUpload.push(awsFile);
-  //cancel pic function
-  $(elem).bind('click', function() {
-    $(elem).remove();
-    awsFile.upload = false;
-  }); 
 }
 
 AWSFiles.addFileToDownload = function(elem){
@@ -113,11 +108,11 @@ function resizeImage(img,ratio,type) {
 }
 
 function createPicPlaceHolder() {
-  var el = $('<div class="pic_place_holder_empty">' +
-               '<div class="caption">' +
-                 '<p></p>' +
-                 '<div class="progress" visibility: hidden>' +
-                 '</div>' +
+  var el = $('<div class="pic_place_holder_empty">'+
+               '<div class="caption">'+
+                 '<p></p>'+
+                 '<div class="progress" visibility: hidden>'+
+                 '</div>'+
                '<div/>' +
              '</div>');
   return el;
@@ -126,10 +121,38 @@ function createPicPlaceHolder() {
 function preview(f) {
   var el, img, progress;
   el = $( '<div class="thumbnail">' +
-            '<img class="thumb"/>' +
+            '<img class="thumb">' +
+				'<div class="btn-toolbar" visibility: hidden>'+
+				  '<div class="btn-group">'+
+					'<a id="remove" class="btn" href="#"><i class="icon-remove"></i></a>'+
+					'<a id="resize" class="btn" href="#"><i class="icon-resize-full"></i></a>'+
+				  '</div>'+
+				'</div>'+
+			'</img>'+
           '</div>' );
+   
   var img = $( "img", el );
   $( f.elem ).prepend(el);
+  
+  $(f.elem).hover(  function()
+					{
+						$( ".btn-toolbar",f.elem ).fadeIn('slow');
+					},
+					function()
+					{
+						$( ".btn-toolbar",f.elem ).fadeOut('slow');
+					});
+  $("#remove",f.elem).click(function(){
+								$(f.elem).slideUp();
+								$(f.elem).remove();
+								f.upload = false;
+							});
+  $("#resize",f.elem).click(function(){
+								//do something
+							});
+					
+
+  
   var src = window.URL.createObjectURL(f.file);
   img.load(function() {
     f.elem.attr('class', 'pic_place_holder');
@@ -227,7 +250,7 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
   xhr.addEventListener("load", function(e) {
     if(xhr.readyState === 4 ) {
       if(xhr.status === 204) {
-        el.unbind('click');
+        el.unbind('hover');
         $( 'p', el ).empty();
         $( 'img', el ).wrap('<a href="https://' + bucketName +
           '.s3.amazonaws.com/' + folderName + '/' + AWSfile.file.name +
