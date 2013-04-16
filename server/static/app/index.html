@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="lib/jquery.js"></script>
     <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/bootstrap.file-input.js"></script>
     <script src="lib/jquery.Jcrop.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css" media="screen">
@@ -60,10 +61,8 @@
       </div>
 
       <div class="page" id="decode_qr_page" style="display: none;">
-        <h2 class="text-center">
-          <i class="icon-qrcode"></i>Select the picture containing QR code:
-          <input class="btn" type="file" id="magic_picture">
-        </h2>
+        <input type="file" id="magic_picture"
+        title="Select the picture containing QR Code...">
       </div>
 
       <div class="page row-fluid" id="crop_qr_page" style="display: none;">
@@ -124,15 +123,20 @@
       <div class="page row-fluid" id="pictures" style="display: none;">
         <div class="span3" id="upload_pics">
           <div id="previewUploadImages">
-            <div id="helpInfo">
-              <div>drag & drop or select files for upload</div>
+            <div class="dnd" id="helpInfo">
+              <h2 class="text-center">
+                Drag pictures here
+              </h2>
+              <p class="text-center">
+                Or
+              </p>
+              <input id="files_uploader" type="file" name="files[]" multiple
+              title="Select pictures from your computer...">
             </div>
-            <input class="btn" type="file" name="files[]" id="files_uploader" multiple>
-            </input>
           </div>
-          <button class="btn" id="upload_button">
+          <button class="btn" id="upload_button" style="display: none;">
             <i class="icon-upload"></i>
-            upload pictures
+            Upload pictures
           </button>
         </div>
         <div class="span9" id="download_pics">

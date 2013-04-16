@@ -1,5 +1,4 @@
 /* Bind Functions */
-$('#files_uploader').bind('change', handleFileSelect);
 $('#upload_pics').bind('dragenter', handleDragEnter);
 $('#upload_pics').bind('dragover', handleDragOver);
 $('#upload_pics').bind('drop', handleFileDrop);
@@ -176,6 +175,7 @@ function handleFiles(files) {
   $( "#upload_pics" ).attr('class', 'span6');
   $( "#download_pics" ).attr('class', 'span6');
   $("#previewUploadImages").children().remove();
+  $( "#upload_button" ).show();
   $("#previewUploadImages").append('<ul class="thumbnails"></ul>');
   for(var i = 0; i < files.length ; i++) {
     var file = files[i];

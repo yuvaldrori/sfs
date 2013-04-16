@@ -169,7 +169,7 @@ function decodeMagicPicture() {
         $( "#bad_qr_image" ).attr('src', src);
         $( "#bad_qr_manual" ).hide();
         pageTurn($( "#crop_qr_page" ));
-		history.pushState({ page: 5 });
+        history.pushState({ page: 5 });
         $( "#crop_button" ).click(function() {
           c = jcrop_api.tellSelect();
           var canvas = document.createElement('canvas');
@@ -200,7 +200,7 @@ function decodeMagicPicture() {
           qrcode.decode(canvas.toDataURL());
         });
       } else {
-        console.log(d);
+        $('#files_uploader').bind('change', handleFileSelect);
         picturesInit(d);
       };
     };
@@ -222,7 +222,6 @@ window.onpopstate = function(event) {
 			break;
 		case 3:
 			picturesInit(currentState.bucketData);
-			console.log("page 3");
 			break;
 		case 4:
 			pageTurn($( "#new_event_page" ));
