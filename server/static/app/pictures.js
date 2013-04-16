@@ -235,6 +235,7 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
         el.unbind('click');
         el.unbind('hover');
         $( '.progress', el ).remove();
+        $( '.btn', el ).remove();
         $( 'img', el ).wrap('<a href="https://' + bucketName +
           '.s3.amazonaws.com/' + folderName + '/' + AWSfile.file.name +
           '" target="_blank"></a>');
