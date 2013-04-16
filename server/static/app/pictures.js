@@ -173,6 +173,8 @@ function AWSFile(file ,elem ,upload, exif) {
 }
 
 function handleFiles(files) {  
+  $( "#upload_pics" ).attr('class', 'span6');
+  $( "#download_pics" ).attr('class', 'span6');
   $("#previewUploadImages").children().remove();
   $("#previewUploadImages").append('<ul class="thumbnails"></ul>');
   for(var i = 0; i < files.length ; i++) {
@@ -218,6 +220,10 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
           '.s3.amazonaws.com/' + folderName + '/' + AWSfile.file.name +
           '" target="_blank"></a>');
         $('#previewDownloadImages').prepend(el);
+        if($( "#previewUploadImages>ul" ).is(':empty')) {
+          $( "#upload_pics" ).remove();
+          $( "#download_pics" ).attr('class', 'span12');
+        }
       } else {
       }
     }
