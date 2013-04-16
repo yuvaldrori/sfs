@@ -66,11 +66,6 @@ AWSFiles.readyToUpload = function() {
 AWSFiles.addFileToUpload = function(f, elem) {
   var awsFile = new AWSFile(f, elem, true);
   this.filesToUpload.push(awsFile);
-  //cancel pic function
-  $(elem).bind('click', function() {
-    $(elem).remove();
-    awsFile.upload = false;
-  }); 
 }
 
 AWSFiles.addFileToDownload = function(elem){
@@ -98,10 +93,20 @@ function resizeImage(img,ratio,type) {
 }
 
 function createPicPlaceHolder() {
-  var el = $('<li class="span2">' +
+  var el = $('<li class="span2 rel">' +
              '  <div class="progress" style="display: none;">' +
              '    <div class="bar"></div>' +
              '  </div>' +
+//           '  <div class="btn-toolbar" style="display: none;">' +
+//           '    <div class="btn-group">' +
+             '      <a class="btn remove" href="#" style="display: none;">' +
+             '        <i class="icon-remove"></i>' +
+             '      </a>' +
+//           '      <a class="btn resize" href="#">' +
+//           '        <i class="icon-resize-full"></i>' +
+//           '      </a>' +
+//           '    </div>' +
+//           '  </div>' +
              '</li>');
   return el;
 }
@@ -109,10 +114,23 @@ function createPicPlaceHolder() {
 function preview(f) {
   var el, img;
   el = $( '<a href="#" class="thumbnail">' +
-            '<img />' +
-          '</a>' );
+          '  <img />' +
+          '</a>');
   var img = $( "img", el );
   $( f.elem ).prepend(el);
+  $(f.elem).hover(function() {
+    $( ".remove", f.elem ).fadeIn('slow');
+  }, function()	{
+    $( ".remove", f.elem ).fadeOut('slow');
+  });
+  $(".remove", f.elem).click(function() {
+    $(f.elem).slideUp();
+    $(f.elem).remove();
+    f.upload = false;
+  });
+  $(".resize",f.elem).click(function() {
+    //do something
+  });
   var src = window.URL.createObjectURL(f.file);
   img.load(function() {
     img.exifLoad(function() {
@@ -174,9 +192,9 @@ function AWSFile(file ,elem ,upload, exif) {
 function handleFiles(files) {  
   $( "#upload_pics" ).attr('class', 'span6');
   $( "#download_pics" ).attr('class', 'span6');
-  $("#previewUploadImages").children().remove();
+  $( "#previewUploadImages" ).children().remove();
   $( "#upload_button" ).show();
-  $("#previewUploadImages").append('<ul class="thumbnails"></ul>');
+  $( "#previewUploadImages" ).append('<ul class="thumbnails"></ul>');
   for(var i = 0; i < files.length ; i++) {
     var file = files[i];
     if (!file.type.match('image.*')) {
@@ -215,6 +233,7 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
     if(xhr.readyState === 4 ) {
       if(xhr.status === 204) {
         el.unbind('click');
+        el.unbind('hover');
         $( '.progress', el ).remove();
         $( 'img', el ).wrap('<a href="https://' + bucketName +
           '.s3.amazonaws.com/' + folderName + '/' + AWSfile.file.name +

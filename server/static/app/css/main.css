@@ -137,3 +137,16 @@
   border-style: dashed;
   padding: 1em;
 }
+
+.remove
+{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.rel
+{
+  position: relative;
+}
+
