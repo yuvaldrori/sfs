@@ -47,7 +47,8 @@ function genQR() {
     $( "#2nd4" ).text(text.slice(12, 16));
     if(img != null) {
       $( "#qr_code" ).append(img);
-      $( "#website>p" ).text('goto: ' + window.location.origin);
+      $( "#website" ).html('<h1 class="text-center">Goto: ' +
+          window.location.origin + '</h1>');
       pageTurn($( "#new_event_page" ));
       history.pushState({ page: 4 });
     }
@@ -57,7 +58,7 @@ function genQR() {
 function isFolder(JSONresponse) {
   var listObjects = JSON.parse(JSONresponse);
   if(listObjects.Contents.length < 1) {
-    $( "#manual_tip" ).prepend('<p>No folder with this name exists, you might be the first to upload pictures. Just in case, please compare the typed code with the picture.</p>');
+    $( "#manual_tip" ).prepend('<p class="text-warning">No folder with this name exists, you might be the first to upload pictures. Just in case, please compare the typed code with the picture.</p>');
   }
   $( "#submit_code_manually" ).removeAttr('disabled');
 }
@@ -101,15 +102,15 @@ function validateManualCode() {
     diff = Math.abs(Math.round((d - fd)/1000/60/60/24));
     if(diff > 14) {
       $( "#manual_tip" ).empty();
-      $( "#manual_tip" ).append('<p>please check red and blue.</p>');
+      $( "#manual_tip" ).append('<p class="text-warning">Check red and blue.</p>');
       if(dd < 1 || dd > 31) {
-        $( "#manual_tip" ).append('<p>you should check first two red characters.</p>');
+        $( "#manual_tip" ).append('<p class="text-warning">Check first two red characters.</p>');
       }
       if(mm < 1 || dd > 12) {
-        $( "#manual_tip" ).append('<p>you should check first two red characters.</p>');
+        $( "#manual_tip" ).append('<p class="text-warning">Check first two red characters.</p>');
       }
       if(yyyy != d.getFullYear()) {
-        $( "#manual_tip" ).append('<p>you should check blue characters.</p>');
+        $( "#manual_tip" ).append('<p class="text-warning">Check blue characters.</p>');
       }
     }
   }
@@ -191,7 +192,7 @@ function decodeMagicPicture() {
                 picturesInit(ddmm + yyyy + f4 + s4);
               });
               $( "#bad_qr_manual" ).show();
-              $( "#bad_qr_status" ).html('<p>I was not able to automatically read the QR code from the marked region. Please try again or manually type the code.</p><p>Please note, if the code is mistyped, you will not be able to see the pictures of other participants nor will they be able to view the pictures you upload.</p>');
+              $( "#bad_qr_status" ).html('<p class="text-error">I was not able to automatically read the QR code from the marked region. Please try again or manually type the code.</p><p class="text-warning">Please note, if the code is mistyped, you will not be able to see the pictures of other participants nor will they be able to view the pictures you upload.</p>');
             } else {
               picturesInit(d);
             };
@@ -231,7 +232,6 @@ window.onpopstate = function(event) {
 			break;
 		default:
 	}
-  
 };
 
 
