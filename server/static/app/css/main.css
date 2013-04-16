@@ -150,3 +150,10 @@
   position: relative;
 }
 
+#previewUploadImages, #previewDownloadImages
+{
+  padding: 1em;
+  border-style: solid;
+  border-color: lightgray;
+}
+
