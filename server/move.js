@@ -8,6 +8,8 @@ process.env.AWS_ACCESS_KEY_ID === undefined) {
   return;
 }
 
+process.chdir(__dirname);
+
 AWS.config.update({region: 'us-east-1'});
 var sourceBucket = 'sfsbucket';
 var destBucket = 'sfsfixed';
