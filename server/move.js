@@ -14,6 +14,11 @@ AWS.config.update({region: 'us-east-1'});
 var sourceBucket = process.env.SFSBUCKET;
 var destBucket = process.env.SFS_DEST_BUCKET;
 
+var daysToKeep = 7;
+var maxThumbSize = 1048576;
+var maxFileSize = 104857600;
+var reThumb = /\/thumb_/;
+
 var s3 = new AWS.S3();
 var params = {};
 params = {'Bucket': sourceBucket};
@@ -28,16 +33,15 @@ s3.client.listObjects(params, function(err, data) {
           var key = data.Contents[i];
           var ld = new Date(dateFormat(key.LastModified));
           var now = new Date();
-          if (Math.abs(now.getDaysBetween(ld)) > 3) {
-            var re = /\/thumb_/;
-            if (!key.Key.match(re)) {
+          if (Math.abs(now.getDaysBetween(ld)) > daysToKeep) {
+            if (!key.Key.match(reThumb)) {
               s3.client.copyObject({'Bucket': destBucket, 'CopySource':
                 sourceBucket + '/' + encodeURIComponent(key.Key), 'Key': key.Key},
                 function(err, data) {
                   if (err) {
                     console.log('error copying key ' + key.Key +
                     ' to private bucket');
-                    console.log(err);
+                  console.log(err);
                   } else {
                     console.log('copied key ' + key.Key + ' to private buckey');
                     s3.client.deleteObject({'Bucket': sourceBucket, 'Key': key.Key},
@@ -52,26 +56,38 @@ s3.client.listObjects(params, function(err, data) {
                       });
                   }
                 });
-            } else {
-              if (parseInt(key.Size) > 1048576) {
-                s3.client.deleteObject({'Bucket': sourceBucket, 'Key': key.Key},
-                function(err, data) {
-                  if (err) {
-                    console.log('error deleting large thumb key ' + key.Key +
-                    ' size ' + key.Size);
-                    console.log(err);
-                  } else {
-                    console.log('deleted large thumb key ' + key.Key +
-                    ' size ' + key.Size);
-                    console.log(data);
-                  }
-                });
-              }
             }
           }
-        })();
+          if (key.Key.match(reThumb) && (parseInt(key.Size) > maxThumbSize)) {
+            s3.client.deleteObject({'Bucket': sourceBucket, 'Key': key.Key},
+              function(err, data) {
+                if (err) {
+                  console.log('error deleting large thumb key ' + key.Key +
+                  ' size ' + key.Size);
+                console.log(err);
+                } else {
+                  console.log('deleted large thumb key ' + key.Key +
+                  ' size ' + key.Size);
+                console.log(data);
+                }
+              });
+          };
+          if (parseInt(key.Size) > maxFileSize) {
+            s3.client.deleteObject({'Bucket': sourceBucket, 'Key': key.Key},
+              function(err, data) {
+                if (err) {
+                  console.log('error deleting large key ' + key.Key +
+                  ' size ' + key.Size);
+                console.log(err);
+                } else {
+                  console.log('deleted large key ' + key.Key +
+                  ' size ' + key.Size);
+                console.log(data);
+                }
+              });
+          }})();
+        }
       }
     }
-  }
-});
+  });
 
