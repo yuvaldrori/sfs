@@ -17,6 +17,7 @@ var params = {};
 params = {'Bucket': sourceBucket};
 s3.client.listObjects(params, function(err, data) {
   if (err) {
+    console.log('error listing objects');
     console.log(err);
   } else {
     if (data.Contents.length > 0) {
@@ -25,26 +26,45 @@ s3.client.listObjects(params, function(err, data) {
           var key = data.Contents[i];
           var ld = new Date(dateFormat(key.LastModified));
           var now = new Date();
-          if (Math.abs(now.getDaysBetween(ld)) > 7) {
-            var re = /\/thumb/;
+          if (Math.abs(now.getDaysBetween(ld)) > 3) {
+            var re = /\/thumb_/;
             if (!key.Key.match(re)) {
               s3.client.copyObject({'Bucket': destBucket, 'CopySource':
                 sourceBucket + '/' + encodeURIComponent(key.Key), 'Key': key.Key},
                 function(err, data) {
                   if (err) {
+                    console.log('error copying key ' + key.Key +
+                    ' to private bucket');
                     console.log(err);
                   } else {
-                    console.log(key);
+                    console.log('copied key ' + key.Key + ' to private buckey');
                     s3.client.deleteObject({'Bucket': sourceBucket, 'Key': key.Key},
                       function(err, data) {
                         if (err) {
+                          console.log('error deleting key ' + key.Key);
                           console.log(err);
                         } else {
+                          console.log('deleted key ' + key.Key);
                           console.log(data);
                         }
                       });
                   }
                 });
+            } else {
+              if (parseInt(key.Size) > 1048576) {
+                s3.client.deleteObject({'Bucket': sourceBucket, 'Key': key.Key},
+                function(err, data) {
+                  if (err) {
+                    console.log('error deleting large thumb key ' + key.Key +
+                    ' size ' + key.Size);
+                    console.log(err);
+                  } else {
+                    console.log('deleted large thumb key ' + key.Key +
+                    ' size ' + key.Size);
+                    console.log(data);
+                  }
+                });
+              }
             }
           }
         })();
