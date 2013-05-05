@@ -19,6 +19,8 @@
     "node-static": "",
     "node-uuid": "",
     "router": "",
+    "date-utils": "",
+    "dateformat": "",
     "aws-sdk": ""
   }
 }
