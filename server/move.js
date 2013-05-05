@@ -86,8 +86,8 @@ s3.client.listObjects(params, function(err, data) {
                 }
               });
           }})();
-        }
       }
     }
-  });
+  }
+});
 
