@@ -11,8 +11,8 @@ process.env.AWS_ACCESS_KEY_ID === undefined) {
 process.chdir(__dirname);
 
 AWS.config.update({region: 'us-east-1'});
-var sourceBucket = 'sfsbucket';
-var destBucket = 'sfsfixed';
+var sourceBucket = process.env.SFSBUCKET;
+var destBucket = process.env.SFS_DEST_BUCKET;
 
 var s3 = new AWS.S3();
 var params = {};
