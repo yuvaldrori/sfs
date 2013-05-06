@@ -255,17 +255,15 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
 
 /************************************ Download Functions ****************************************************/
 
-function addImageThumbnail(fileName, awsBucketName) {
+function addImageThumbnail(fileName, awsBucketName, complete) {
   var re = /\/thumb_/;
   var thumbrul, fullurl;
-  if(re.test(fileName)) {
-    thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
-    fullurl  = "https://" + awsBucketName + ".s3.amazonaws.com/" +
-      fileName.replace('thumb_', '');
+  thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+  if (complete) {
+    fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" +
+              fileName.replace('thumb_', '');
   } else {
-    thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/thumb_" +
-      fileName;
-    fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+    fullurl = "#";
   }
   var link = document.createElement('a');
   var img = new Image();
@@ -283,18 +281,25 @@ function addImageThumbnail(fileName, awsBucketName) {
 function downloadFiles(JSONresponse) {
 
   var listObjects = JSON.parse(JSONresponse);
+  var re = /\/thumb_/;
   $("#previewDownloadImages").children().remove();
   if(listObjects.Contents && listObjects.Name) {
-    $(listObjects.Contents).each(function() {  
-      var fileName = this.Key;
+    var thumbsArray = listObjects.Contents.filter(function(el) {
+      return re.test(el.Key);
+    });
+    $(thumbsArray).each(function() {  
       elem = createPicPlaceHolder();
       $('#previewDownloadImages').append(elem);
       AWSFiles.addFileToDownload(elem);
     });
 
-    $(listObjects.Contents).each(function() {  
-      var fileName = this.Key;
-      addImageThumbnail(fileName ,listObjects.Name);
+    $(thumbsArray).each(function() { 
+      for (var i = 0; i < listObjects.Contents.length; i++) {
+        if (listObjects.Contents[i].Key === this.Key.replace(re, '\/')) {
+          this['myComplete'] = true;
+        }
+      }
+      addImageThumbnail(this.Key ,listObjects.Name, this.myComplete);
     });
   }
 }
@@ -308,7 +313,7 @@ function getFilesList(bucketName,folderName, func) {
 
   // send the collected data as JSON
   var data = {};
-  data["Prefix"] = folderName + '/thumb_';
+  data["Prefix"] = folderName + '/';
   xhr.send(JSON.stringify(data));
   xhr.onloadend = function () {
     if(xhr.readyState == 4 ) {
