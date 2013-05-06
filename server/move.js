@@ -34,7 +34,7 @@ s3.client.listObjects(params, function(err, data) {
           var ld = new Date(dateFormat(key.LastModified));
           var now = new Date();
           if (Math.abs(now.getDaysBetween(ld)) > daysToKeep) {
-            if (!key.Key.match(reThumb)) {
+            if (!reThumb.test(key.Key)) {
               s3.client.copyObject({'Bucket': destBucket, 'CopySource':
                 sourceBucket + '/' + encodeURIComponent(key.Key), 'Key': key.Key},
                 function(err, data) {
@@ -58,7 +58,7 @@ s3.client.listObjects(params, function(err, data) {
                 });
             }
           }
-          if (key.Key.match(reThumb) && (parseInt(key.Size) > maxThumbSize)) {
+          if (reThumb.test(key.Key) && (parseInt(key.Size) > maxThumbSize)) {
             s3.client.deleteObject({'Bucket': sourceBucket, 'Key': key.Key},
               function(err, data) {
                 if (err) {
