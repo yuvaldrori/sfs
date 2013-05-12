@@ -1,18 +1,63 @@
 $( document ).ready( function() {
 
-  history.pushState({ page: 1 });
-  
-  pageTurn($( "#welcome_page" ));
-  $( "#gencode_button" ).click(function() {
-    genQR();
-  });
-  
-  $( "#picture_button" ).click(function() {
-	  history.pushState({ page: 2 });
-      pageTurn($( "#decode_qr_page" ));
-    $( "#magic_picture" ).change(decodeMagicPicture);
-  });
+  var url = window.location.href;
+  var old_file = url.substr(url.lastIndexOf('?'));
+  if ( old_file && /^\?oldfile=/.test(old_file)) {
+    var old_object = old_file.split('=', 2)[1];
+    pageTurn($( "#old_page" ));
+    $( "#mine" ).click(function() {
+      mine();
+    });
+    $( "#submit_credit" ).click(function() {
+      getLink(old_object);
+    });
+  } else {
+    history.pushState({ page: 1 });
+    
+    pageTurn($( "#welcome_page" ));
+    $( "#gencode_button" ).click(function() {
+      genQR();
+    });
+    
+    $( "#picture_button" ).click(function() {
+      history.pushState({ page: 2 });
+        pageTurn($( "#decode_qr_page" ));
+      $( "#magic_picture" ).change(decodeMagicPicture);
+    });
+  }
 });
+
+function getLink(old_object) {
+  var url = window.location.origin + '/link';
+  pdata = {'link': old_object, 'credit': $('#credit').val()};
+  $.post(url, JSON.stringify(pdata), function(data) {
+    if (data && data.link) {
+      window.location.href = data.link;
+    }
+  }, 'json').fail(function() {
+      $('#old_form').append('<div class="alert">' +
+                            '<button type="button" class="close"' +
+                            'data-dismiss="alert">&times;</button>' +
+                            '<strong>Warning!</strong> Bad credit </div>');
+  });
+}
+
+function mine() {
+  var url = window.location.origin + '/credits';
+  var lis = [];
+  var ret;
+  $.getJSON(url, function(data) {
+    if (data.length > 0) {
+      for (var i = 0; i < data.length; i++) {
+        lis.push('<dd>' + data[i]  + '</dd>');
+      }
+      $('#no_credits').remove();
+      $('#old_text').append('<dl><dt>Credits</dt>' + lis.join('') + '</dl>');
+    } else {
+      $('#no_credits').html('<p>Could not get credits</p>');
+    }
+  });
+}
 
 function pageTurn(page) {
   $( ".page" ).hide();

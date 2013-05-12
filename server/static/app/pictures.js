@@ -263,7 +263,8 @@ function addImageThumbnail(fileName, awsBucketName, complete) {
     fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" +
               fileName.replace('thumb_', '');
   } else {
-    fullurl = "#";
+    fullurl = window.location.href + '?oldfile=/' +
+              fileName.replace('thumb_', '');
   }
   var link = document.createElement('a');
   var img = new Image();
@@ -274,8 +275,8 @@ function addImageThumbnail(fileName, awsBucketName, complete) {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
     e.prepend(link);
   }
-  img.src = thumburl;
   link.appendChild(img);
+  img.src = thumburl;
 }
 
 function downloadFiles(JSONresponse) {
@@ -335,6 +336,4 @@ function picturesInit(bucket) {
   
   history.pushState({ page: 3 ,bucketData: bucket});
 }
-
-
 

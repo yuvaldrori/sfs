@@ -16,7 +16,7 @@
   <body>
     <div id="screen">
       
-      <div class="page row-fluid" id="welcome_page">
+      <div class="page row-fluid" id="welcome_page" style="display: none;">
         <div class="span12" id="help">
           <h1 class="text-center">
             Simple picture sharing.
@@ -142,6 +142,21 @@
         <div class="span9" id="download_pics">
           <ul class="thumbnails" id="previewDownloadImages">
           </ul>
+        </div>
+      </div>
+
+      <div class="page row-fluid" id="old_page" style="display: none;">
+        <div class="span6" id="old_text">
+          <p>This picture is a bit old, enter one credit to get a link to the
+          picture.</p>
+          <p id="no_credits">No credits? Hit <button class="btn" id="mine">this button</button>
+          to get some.</p>
+        </div>
+        <div class="span6" id="old_form">
+          <input type="text" id="credit" placeholder="credit">
+          <button id="submit_credit" class="btn">
+            View full size picture
+          </button>
         </div>
       </div>
 
