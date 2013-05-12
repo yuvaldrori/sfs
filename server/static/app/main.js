@@ -72,7 +72,8 @@ function genFolderName(digits) {
 function genQR() {
   var qrTypeNumber = 4;
   var qrErrorCorrectionLevel = 'M';
-  var size = Math.min($(window).width(), $(window).height()) * 0.9;
+  var qrheightscale = 0.5;
+  var size = Math.min($(window).width(), $(window).height()) * qrheightscale;
   // cell size calc taken from genqr code
   var qrCellSize = Math.floor(size / (qrTypeNumber * 4 + 25));
   var qr = genQRcode(qrTypeNumber,qrErrorCorrectionLevel);
@@ -85,14 +86,14 @@ function genQR() {
     text = sday + smonth + syear + r;
     qr.addData(text);
     qr.make();
-    var img = qr.createImgTag(qrCellSize);
+    var img = qr.createImgTag(qrCellSize, qrCellSize);
     $( "#ddmm" ).text(text.slice(0, 4));
     $( "#yyyy" ).text(text.slice(4, 8));
     $( "#1st4" ).text(text.slice(8, 12));
     $( "#2nd4" ).text(text.slice(12, 16));
     if(img != null) {
       $( "#qr_code" ).append(img);
-      $( "#website" ).html('<h1 class="text-center">Goto: ' +
+      $( "#website" ).html('<h1 class="text-center">' +
           window.location.origin + '</h1>');
       pageTurn($( "#new_event_page" ));
       history.pushState({ page: 4 });
