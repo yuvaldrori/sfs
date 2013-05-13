@@ -255,12 +255,12 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
 
 /************************************ Download Functions ****************************************************/
 
-function addImageThumbnail(fileName, awsBucketName, complete) {
+function addImageThumbnail(fileName, complete) {
   var re = /\/thumb_/;
   var thumbrul, fullurl;
-  thumburl = "https://" + awsBucketName + ".s3.amazonaws.com/" + fileName;
+  thumburl = "https://" + AWSFiles.bucketName + ".s3.amazonaws.com/" + fileName;
   if (complete) {
-    fullurl = "https://" + awsBucketName + ".s3.amazonaws.com/" +
+    fullurl = "https://" + AWSFiles.bucketName + ".s3.amazonaws.com/" +
               fileName.replace('thumb_', '');
   } else {
     fullurl = window.location.href + '?oldfile=/' +
@@ -279,13 +279,12 @@ function addImageThumbnail(fileName, awsBucketName, complete) {
   img.src = thumburl;
 }
 
-function downloadFiles(JSONresponse) {
+function downloadFiles(objects) {
 
-  var listObjects = JSON.parse(JSONresponse);
   var re = /\/thumb_/;
   $("#previewDownloadImages").children().remove();
-  if(listObjects.Contents && listObjects.Name) {
-    var thumbsArray = listObjects.Contents.filter(function(el) {
+  if(objects) {
+    var thumbsArray = objects.filter(function(el) {
       return re.test(el.Key);
     });
     $(thumbsArray).each(function() {  
@@ -295,38 +294,36 @@ function downloadFiles(JSONresponse) {
     });
 
     $(thumbsArray).each(function() { 
-      for (var i = 0; i < listObjects.Contents.length; i++) {
-        if (listObjects.Contents[i].Key === this.Key.replace(re, '\/')) {
+      for (var i = 0; i < objects.length; i++) {
+        if (objects[i].Key === this.Key.replace(re, '\/')) {
           this['myComplete'] = true;
         }
       }
-      addImageThumbnail(this.Key ,listObjects.Name, this.myComplete);
+      addImageThumbnail(this.Key, this.myComplete);
     });
   }
 }
 
-function getFilesList(bucketName,folderName, func) {
+function getFilesList(params, ret, func) {
 
   var url = window.location.origin + '/list';
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', url, true);
-  xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
   // send the collected data as JSON
-  var data = {};
-  data["Prefix"] = folderName + '/';
-  xhr.send(JSON.stringify(data));
-  xhr.onloadend = function () {
-    if(xhr.readyState == 4 ) {
-      if (xhr.status == 200) {
-        func(xhr.responseText);
-      }
+  $.post(url, JSON.stringify(params), function(data) {
+    if (data.IsTruncated) {
+      ret = ret.concat(data.Contents);
+      params['Marker'] = data.Contents[data.Contents.length - 1].Key;
+      getFilesList(params, ret, func);
+    } else {
+      func(ret.concat(data.Contents));
     }
-  };
+  }, 'json');
 }
 
 AWSFiles.getPictures = function() {
-  getFilesList(this.bucketName, this.folderName, downloadFiles);
+  var arr = [];
+  var params = {'Prefix': this.folderName + '/'};
+  getFilesList(params, arr, downloadFiles);
 }
 
 function picturesInit(bucket) {

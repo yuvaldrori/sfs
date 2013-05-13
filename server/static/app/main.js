@@ -101,9 +101,8 @@ function genQR() {
   }
 }
 
-function isFolder(JSONresponse) {
-  var listObjects = JSON.parse(JSONresponse);
-  if(listObjects.Contents.length < 1) {
+function isFolder(objects) {
+  if(objects.length < 1) {
     $( "#manual_tip" ).prepend('<p class="text-warning">No folder with this name exists, you might be the first to upload pictures. Just in case, please compare the typed code with the picture.</p>');
   }
   $( "#submit_code_manually" ).removeAttr('disabled');
@@ -179,7 +178,9 @@ function validateManualCode() {
   if(ddmm_ok === true && yyyy_ok === true && fst4_ok === true &&
       snd4_ok === true) {
     //TODO: what to do when xhr fails?
-    getFilesList(AWSFiles.bucketName, ddmm + yyyy + fst4 + snd4, isFolder);
+    var arr = [];
+    var params = {'Prefix': ddmm + yyyy + fst4 + snd4 + '/'};
+    getFilesList(params, arr, isFolder);
   } else {
     $( "#submit_code_manually" ).attr('disabled', 'disabled');
   }
