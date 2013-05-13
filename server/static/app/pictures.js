@@ -317,7 +317,9 @@ function getFilesList(params, ret, func) {
     } else {
       func(ret.concat(data.Contents));
     }
-  }, 'json');
+  }, 'json').fail(function() {
+    func([]);
+  });
 }
 
 AWSFiles.getPictures = function() {
@@ -326,11 +328,12 @@ AWSFiles.getPictures = function() {
   getFilesList(params, arr, downloadFiles);
 }
 
-function picturesInit(bucket) {
-  AWSFiles.Init(bucket);
+function picturesInit(folder) {
+  console.log(folder);
+  AWSFiles.Init(folder);
   AWSFiles.getPictures();
   pageTurn($( "#pictures" ));
   
-  history.pushState({ page: 3 ,bucketData: bucket});
+  history.pushState({ page: 3 ,bucketData: folder});
 }
 

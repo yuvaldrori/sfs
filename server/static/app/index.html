@@ -104,7 +104,8 @@
                     <span class="help-inline" id="label_2nd4"></span>
                   </div>
                   <div class="controls">
-                    <button id="submit_code_manually" class="btn" disabled>
+                    <button id="submit_code_manually" type="button"
+                      class="btn" disabled>
                       Submit code manually
                       <i class="icon-play"></i>
                     </button>
@@ -152,12 +153,14 @@
           <p id="no_credits">No credits? Hit <button class="btn" id="mine">this button</button>
           to get some.</p>
         </div>
-        <div class="span6" id="old_form">
-          <input type="text" id="credit" placeholder="credit">
-          <button id="submit_credit" class="btn">
-            View full size picture
-          </button>
-        </div>
+        <form class="form-inline">
+          <div class="span6" id="old_form">
+            <input type="text" id="credit" placeholder="credit">
+            <button id="submit_credit" type="button" class="btn">
+              View full size picture
+            </button>
+          </div>
+      </form>
       </div>
 
     </div>
