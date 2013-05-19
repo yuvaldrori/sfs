@@ -3,6 +3,7 @@ $('#upload_pics').bind('dragenter', handleDragEnter);
 $('#upload_pics').bind('dragover', handleDragOver);
 $('#upload_pics').bind('drop', handleFileDrop);
 $('#upload_button').bind('click', handleFileupload);
+$('#close_modal').bind('click', function(){$('#upload_pics').hide()});
 /**************************************************/
 
 /* AWS Files Struct*/
@@ -94,6 +95,8 @@ function resizeImage(img,ratio,type) {
 
 function createPicPlaceHolder() {
   var el = $('<li class="span2 rel">' +
+             ' <a href="#" class="thumbnail" id="placeholder">' +
+             ' </a>' +
              '  <div class="progress" style="display: none;">' +
              '    <div class="bar"></div>' +
              '  </div>' +
@@ -117,6 +120,7 @@ function preview(f) {
           '  <img />' +
           '</a>');
   var img = $( "img", el );
+  $( '#placeholder', f.elem ).remove();
   $( f.elem ).prepend(el);
   $(f.elem).hover(function() {
     $( ".remove", f.elem ).fadeIn('slow');
@@ -190,8 +194,6 @@ function AWSFile(file ,elem ,upload, exif) {
 }
 
 function handleFiles(files) {  
-  $( "#upload_pics" ).attr('class', 'span6');
-  $( "#download_pics" ).attr('class', 'span6');
   $( "#previewUploadImages" ).children().remove();
   $( "#upload_button" ).show();
   $( "#previewUploadImages" ).append('<ul class="thumbnails"></ul>');
@@ -240,9 +242,8 @@ function sendForm(form ,AWSfile ,url,bucketName,folderName) {
           '.s3.amazonaws.com/' + folderName + '/' + AWSfile.file.name +
           '" target="_blank"></a>');
         $('#previewDownloadImages').prepend(el);
-        if($( "#previewUploadImages>ul" ).is(':empty')) {
-          $( "#upload_pics" ).remove();
-          $( "#download_pics" ).attr('class', 'span12');
+        if ($('#previewUploadImages>ul').is(':empty')) {
+          $('#upload_pics').hide();
         }
       } else {
       }
@@ -273,6 +274,7 @@ function addImageThumbnail(fileName, complete) {
   link.target = '_blank';
   img.onload = function() {
     var e = AWSFiles.filesToDownload[AWSFiles.filesToDownloadIndex++];
+    e.empty();
     e.prepend(link);
   }
   link.appendChild(img);
@@ -292,7 +294,7 @@ function downloadFiles(objects) {
       $('#previewDownloadImages').append(elem);
       AWSFiles.addFileToDownload(elem);
     });
-
+    Holder.add_image("holder.js/140x140/text:-", ".thumbnail").run()
     $(thumbsArray).each(function() { 
       for (var i = 0; i < objects.length; i++) {
         if (objects[i].Key === this.Key.replace(re, '\/')) {
@@ -329,7 +331,6 @@ AWSFiles.getPictures = function() {
 }
 
 function picturesInit(folder) {
-  console.log(folder);
   AWSFiles.Init(folder);
   AWSFiles.getPictures();
   pageTurn($( "#pictures" ));

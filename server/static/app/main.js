@@ -18,12 +18,9 @@ $( document ).ready( function() {
     $( "#gencode_button" ).click(function() {
       genQR();
     });
+
+    $( "#magic_picture" ).change(decodeMagicPicture);
     
-    $( "#picture_button" ).click(function() {
-      history.pushState({ page: 2 });
-        pageTurn($( "#decode_qr_page" ));
-      $( "#magic_picture" ).change(decodeMagicPicture);
-    });
   }
 });
 
@@ -86,7 +83,7 @@ function genQR() {
     text = sday + smonth + syear + r;
     qr.addData(text);
     qr.make();
-    var img = qr.createImgTag(qrCellSize, qrCellSize);
+    var img = qr.createImgTag(qrCellSize);
     $( "#ddmm" ).text(text.slice(0, 4));
     $( "#yyyy" ).text(text.slice(4, 8));
     $( "#1st4" ).text(text.slice(8, 12));
@@ -263,9 +260,6 @@ window.onpopstate = function(event) {
 	{
 		case 1:
 			pageTurn($( "#welcome_page" ));
-			break;
-		case 2:
-			pageTurn($( "#decode_qr_page" ));
 			break;
 		case 3:
 			picturesInit(currentState.bucketData);
