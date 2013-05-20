@@ -138,7 +138,8 @@ function decodeMagicPicture() {
       var file = {};
       var src = window.URL.createObjectURL(this.files[0]);
       qrcode.callback = function(e, d) {
-        if (e) {
+      var re = /\d{8}[\da-z]{8}/;
+        if (e || !re.test(d)) {
           $('#manual_code').draggable();
           $( "#bad_qr_image" ).attr('src', src);
           pageTurn($( "#bad_qr_page" ));
