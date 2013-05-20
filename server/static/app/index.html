@@ -4,14 +4,13 @@
     <meta charset="utf-8">
     <title>Pick Up</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="lib/jquery.js"></script>
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <script src="lib/bootstrap.file-input.js"></script>
-    <script src="lib/jquery.Jcrop.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css"
           media="screen">
-    <link rel="stylesheet" href="css/jquery.Jcrop.min.css" type="text/css" />
     <link rel="stylesheet" href="css/main.css" type="text/css" />
   </head>
   <body>
@@ -70,56 +69,38 @@
         </div>
       </div>
 
-      <div class="page row-fluid" id="crop_qr_page" style="display: none;">
-        <div class="span6" id="bad_qr">
+      <div class="page row-fluid" id="bad_qr_page" style="display: none;">
+        <div id="bad_qr">
           <img id="bad_qr_image"></img>
         </div>
-        <div class="span6">
-          <div id="bad_qr_status">
-            <p class="text-error">
-              I was unable to automatically read the QR code. Please mark the
-              QR code region and press the "crop" button to try again.
-            </p>
+        <div id="manual_code" class="modal">
+          <div class="modal-header">
+            <h3 class="text-error">
+              QR code decoding failed!
+            </h3>
           </div>
           <div>
-            <button class="btn" id="crop_button">
-              Crop
-            </button>
-            <div id="bad_qr_manual">
-              <form class="form-horizontal" id="manual_input">
-                <div class="control-group">
-                  <div class="controls">
-                    <input class="input-mini" type="text" id="input_ddmm"
-                    maxlength="4" autofocus autocomplete="off">
-                    <span class="help-inline" id="label_ddmm"></span>
-                  </div>
-                  <div class="controls">
-                    <input class="input-mini" type="text" id="input_yyyy"
-                    maxlength="4" autocomplete="off">
-                    <span class="help-inline" id="label_yyyy"></span>
-                  </div>
-                  <div class="controls">
-                    <input class="input-mini" type="text" id="input_1st4"
-                    maxlength="4" autocomplete="off">
-                    <span class="help-inline" id="label_1st4"></span>
-                  </div>
-                  <div class="controls">
-                    <input class="input-mini" type="text" id="input_2nd4"
-                    maxlength="4" autocomplete="off">
-                    <span class="help-inline" id="label_2nd4"></span>
-                  </div>
-                  <div class="controls">
-                    <button id="submit_code_manually" type="button"
-                      class="btn" disabled>
-                      Submit code manually
-                      <i class="icon-play"></i>
-                    </button>
-                  </div>
-                </div>
+            <div class="modal-body" id="bad_qr_manual">
+              <p class="text-error" id="bad_qr_status">
+              </p>
+              <form class="form-inline" id="manual_input">
+                <input class="input-mini" type="text" id="input_ddmm"
+                maxlength="4" autofocus autocomplete="off">
+                <input class="input-mini" type="text" id="input_yyyy"
+                maxlength="4" autocomplete="off">
+                <input class="input-mini" type="text" id="input_1st4"
+                maxlength="4" autocomplete="off">
+                <input class="input-mini" type="text" id="input_2nd4"
+                maxlength="4" autocomplete="off">
               </form>
-              <div id="manual_tip">
-                <p>
-                </p>
+              <div id="manual_tip" class="alert" style="display: none;">
+              </div>
+              <div class="modal-footer">
+                <button id="submit_code_manually" type="button"
+                  class="btn" disabled>
+                  Submit
+                  <i class="icon-play"></i>
+                </button>
               </div>
             </div>
           </div>
@@ -156,21 +137,23 @@
         </div>
       </div>
 
-      <div class="page row-fluid" id="old_page" style="display: none;">
-        <div class="span6" id="old_text">
-          <p>This picture is a bit old, enter one credit to get a link to the
-          picture.</p>
-          <p id="no_credits">No credits? Hit <button class="btn" id="mine">this button</button>
-          to get some.</p>
+      <div class="page" id="old_page" style="display: none;">
+        <div class="hero-unit span6 offset3" id="old_text">
+          <h1>Archived picture</h1>
+          <p>
+            <div class="input-append">
+              <input class="span4" type="text" id="credit"
+              placeholder="credit">
+              <button id="submit_credit" type="button" class="btn">
+                View full size picture
+              </button>
+            </div>
+          </p>
+          <p id="no_credits">
+            No credits?
+            <button class="btn btn-primary" id="mine">get some</button>
+          </p>
         </div>
-        <form class="form-inline">
-          <div class="span6" id="old_form">
-            <input type="text" id="credit" placeholder="credit">
-            <button id="submit_credit" type="button" class="btn">
-              View full size picture
-            </button>
-          </div>
-      </form>
       </div>
 
     </div>

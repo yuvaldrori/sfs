@@ -4,6 +4,7 @@ $('#upload_pics').bind('dragover', handleDragOver);
 $('#upload_pics').bind('drop', handleFileDrop);
 $('#upload_button').bind('click', handleFileupload);
 $('#close_modal').bind('click', function(){$('#upload_pics').hide()});
+$('#upload_pics').draggable();
 /**************************************************/
 
 /* AWS Files Struct*/
